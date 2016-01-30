@@ -7,7 +7,7 @@ import org.ini4j.Ini
 import java.io.FileReader
 import com.github.mirreck._
 
-object FFWrapper {
+object FakeManager {
   val log = Logger(LoggerFactory.getLogger(this.getClass))
 
   val factory = new FakeFactory

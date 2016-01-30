@@ -18,13 +18,13 @@ object AVManager {
 
   def getRandom(avTag: String): String = {
     if (!savedAvs.keySet.contains(avTag)) {
-      val sql = ConfigManager.getSection(avTag).fetch("sql")
+      val sql = ConfigManager.getSectionKey(avTag, "sql")
+
       val loadedItems = DBManager.getAvList(sql, "av")
       savedAvs(avTag) = loadedItems
     }
 
     var requiredList = savedAvs(avTag)
-
     val randomizer = new Random
     requiredList(randomizer.nextInt(requiredList.length))
   }

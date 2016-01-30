@@ -9,6 +9,7 @@ import Scalaz._
 
 import org.ini4j.Ini
 import java.io.FileReader
+import scala.collection.JavaConversions._
 
 object DBManager {
   val log = Logger(LoggerFactory.getLogger(this.getClass))
@@ -18,17 +19,18 @@ object DBManager {
   private val connection = getConnection
 
   def getAvList(sql: String, columnName: String): List[String] = {
-    val avList = List[String]()
+    val avList = new java.util.ArrayList[String]()
 
+    log.info(s"Excecuting the sql: ${sql}")
     val stmt = this.connection.createStatement
     val rs = stmt.executeQuery(sql)
 
     while (rs.next) {
-      avList ++= List(rs.getString(columnName))
+      avList.add(rs.getString(columnName))
     }
 
     stmt.close
-    avList
+    avList.toList
   }
 
   private def getConnection(): Connection = {
@@ -38,5 +40,15 @@ object DBManager {
       AppConfig.conf.getString("db.default.user"),
       AppConfig.conf.getString("db.default.password")
     )
+  }
+
+  def executeInsert(sql: String): Unit = {
+    val stmt = connection.createStatement
+    stmt.executeUpdate(sql)
+    stmt.close
+  }
+
+  def closeConn() = {
+    connection.close
   }
 }
