@@ -18,7 +18,7 @@ object AVManager {
 
   def getRandom(avTag: String): String = {
     if (!savedAvs.keySet.contains(avTag)) {
-      val sql = ConfigManager.getSectionKey(avTag, "sql")
+      val sql = ConfigManager.getKey(avTag, "sql")
 
       val loadedItems = DBManager.getAvList(sql, "av")
       savedAvs(avTag) = loadedItems

@@ -21,7 +21,6 @@ object DBManager {
   def getAvList(sql: String, columnName: String): List[String] = {
     val avList = new java.util.ArrayList[String]()
 
-    log.info(s"Excecuting the sql: ${sql}")
     val stmt = this.connection.createStatement
     val rs = stmt.executeQuery(sql)
 
@@ -34,12 +33,17 @@ object DBManager {
   }
 
   private def getConnection(): Connection = {
-    Class.forName(AppConfig.conf.getString("db.default.driver"))
-    DriverManager.getConnection(
-      AppConfig.conf.getString("db.default.url"),
-      AppConfig.conf.getString("db.default.user"),
-      AppConfig.conf.getString("db.default.password")
+    ConfigManager.assertSectionExists("db")
+
+    Class.forName(ConfigManager.getKey("db", "driver"))
+    val conn = DriverManager.getConnection(
+      ConfigManager.getKey("db", "url"),
+      ConfigManager.getKey("db", "user"),
+      ConfigManager.getKey("db", "password")
     )
+
+    conn.setAutoCommit(false)
+    conn
   }
 
   def executeInsert(sql: String): Unit = {
@@ -48,7 +52,15 @@ object DBManager {
     stmt.close
   }
 
-  def closeConn() = {
-    connection.close
+  def closeConn(rollback: Boolean) = {
+    if (connection != null) {
+      if (rollback) {
+        connection.rollback
+      } else {
+        connection.commit
+      }
+
+      connection.close
+    }
   }
 }

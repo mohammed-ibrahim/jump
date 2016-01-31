@@ -11,15 +11,14 @@ object SqlBuilder {
   val log = Logger(LoggerFactory.getLogger(this.getClass))
 
   def buildImportStatement(sectionTag: String, params: List[(String, String)]): List[String] = {
-    val numRows = ConfigManager.getSectionKey(sectionTag, "rows").toInt
+    val numRows = ConfigManager.getKey(sectionTag, "rows").toInt
     val batchSize = AppConfig.conf.getInt("batch_size")
 
     val totalIterations = numRows / batchSize
     val remaining = numRows % batchSize
 
-    log.info(s"Running total of ${totalIterations} iteration(s) with ${remaining}")
-    val tableName = ConfigManager.getSectionKey(sectionTag, "table")
-    val fields = ConfigManager.getSectionKey(sectionTag, "fields")
+    val tableName = ConfigManager.getKey(sectionTag, "table")
+    val fields = ConfigManager.getKey(sectionTag, "fields")
 
     val builder = new java.util.ArrayList[String]
     for (i <- 0 until totalIterations) {
@@ -79,7 +78,7 @@ object SqlBuilder {
         str = param
       }
 
-      case "av" => {
+      case "section" => {
         str = AVManager.getRandom(param)
       }
 

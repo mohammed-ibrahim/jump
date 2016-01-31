@@ -10,7 +10,7 @@ object ConfigParser {
   val log = Logger(LoggerFactory.getLogger(this.getClass))
 
   def parseImportStatement(sectionTag: String): List[(String, String)] = {
-    val fields = ConfigManager.getSectionKey(sectionTag, "stragegy")
+    val fields = ConfigManager.getKey(sectionTag, "stragegy")
 
     val result = fields.split(",").map { x =>
       val item = x.split(":").toList

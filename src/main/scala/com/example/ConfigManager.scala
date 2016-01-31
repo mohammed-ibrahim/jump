@@ -17,11 +17,30 @@ object ConfigManager {
     this.ini = new Ini(new FileReader(fileName))
   }
 
-  def getStartSectionKey(key: String): String = {
-    ini.get("start").fetch(key)
+  def assertSectionExists(sectionTag: String) = {
+    var section = ini.get(sectionTag)
+
+    if (section == null) {
+      throw new RuntimeException(s"Config section not found[${sectionTag}], This section is mandatory")
+    }
   }
 
-  def getSectionKey(tag: String, key: String): String = {
-    ini.get(tag).fetch(key)
+  def assertSectionExistsWithKeys(sectionTag: String, keys: List[String]) = {
+
+    null
+  }
+
+  def getKey(sectionTag: String, key: String): String = {
+    var section = ini.get(sectionTag)
+    if (section == null) {
+      throw new RuntimeException(s"Config section not found[${sectionTag}]")
+    }
+
+    var result = ini.get(sectionTag).fetch(key)
+    if (result == null) {
+      throw new RuntimeException(s"Config key [${key}] not found in section [${sectionTag}]")
+    }
+
+    result
   }
 }

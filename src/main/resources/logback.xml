@@ -1,6 +1,25 @@
 <configuration>
+  <property name="LOG_FILE" value="/home/vagrant/www/work/jump/output.log" />
+
   <!-- Remove in production -->
  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{35} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <!-- The file appender, logs to files with rolling -->
+  <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${LOG_FILE}</file>
+
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <!-- daily rollover -->
+      <fileNamePattern>${LOG_FILE}.%d.log</fileNamePattern>
+
+      <maxHistory>5</maxHistory>
+    </rollingPolicy>
+
+    <append>true</append>
     <encoder>
       <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{35} - %msg%n</pattern>
     </encoder>
@@ -11,8 +30,9 @@
     <appender-ref ref="FILE" />
   </appender>
 
-  <!-- <logger name="spray.can.server.HttpServerConnection" level="INFO" /> -->
-  <!-- <logger name="akka.io.TcpListener" level="INFO" /> -->
+  <root level="debug">
+    <appender-ref ref="FILE" />
+  </root>
 
   <root level="info">
     <appender-ref ref="STDOUT" />
