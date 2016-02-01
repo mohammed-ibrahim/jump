@@ -26,6 +26,7 @@ ScalariformKeys.preferences := ScalariformKeys.preferences.value
   .setPreference(IndentSpaces, 2)
 
 mappings in oneJar += (file("src/main/resources/application.conf"),"models")
+mappings in oneJar += (file("src/main/resources/logback.xml"),"logback.xml")
 
 name := """jump"""
 

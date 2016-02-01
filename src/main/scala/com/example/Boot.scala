@@ -10,6 +10,7 @@ import java.util.Date
 
 import java.io.StringWriter
 import java.io.PrintWriter
+import java.io.File
 
 object Boot {
   val log = Logger(LoggerFactory.getLogger(this.getClass))
@@ -21,7 +22,14 @@ object Boot {
         fileName = args(0)
       }
 
+      val file = new File(fileName)
+      if (!file.exists()) {
+        throw new RuntimeException(s"The configuration file [${fileName}] doesn't exists or is not accesssible to the application.")
+      }
+
       ConfigManager.load(fileName)
+      DBManager.init
+
       ConfigManager.ini.keySet.map { x =>
         runSection(x)
       }
@@ -32,7 +40,7 @@ object Boot {
         DBManager.closeConn(true)
         val sw = new StringWriter
         e.printStackTrace(new PrintWriter(sw))
-        log.error("Failed with error: rolling back: " + e.toString)
+        log.error("Failed with error: rolling back: " + sw.toString)
       }
     }
   }
@@ -44,10 +52,8 @@ object Boot {
     if (runType == "import") {
       var result = ConfigParser.parseImportStatement(sectionTag)
       var generatedSql = SqlBuilder.buildImportStatement(sectionTag, result)
-      var total = 0
       generatedSql.map { x =>
         DBManager.executeInsert(x)
-        total = total + x.length
       }
 
       log.info(s"[${sectionTag}] imported ${ConfigManager.getKey(sectionTag, "rows")} rows")

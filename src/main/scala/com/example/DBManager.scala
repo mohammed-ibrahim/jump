@@ -16,7 +16,11 @@ object DBManager {
 
   val savedAvs = Map[String, List[String]]()
 
-  private val connection = getConnection
+  private var connection: Connection = null
+
+  def init() = {
+    connection = getConnection
+  }
 
   def getAvList(sql: String, columnName: String): List[String] = {
     val avList = new java.util.ArrayList[String]()
@@ -33,8 +37,6 @@ object DBManager {
   }
 
   private def getConnection(): Connection = {
-    ConfigManager.assertSectionExists("db")
-
     Class.forName(ConfigManager.getKey("db", "driver"))
     val conn = DriverManager.getConnection(
       ConfigManager.getKey("db", "url"),
