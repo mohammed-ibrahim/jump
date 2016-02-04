@@ -77,7 +77,7 @@ object SqlBuilder {
       }
 
       case "section" => {
-        str = wrap(escape(AVManager.getRandom(param)))
+        str = wrap(escape(AVManager.getNext(param)))
       }
 
       case _ => {

@@ -16,16 +16,41 @@ object AVManager {
 
   private val savedAvs = Map[String, List[String]]()
 
+  private val avIterator = Map[String, Iterator[String]]()
+
   def getRandom(avTag: String): String = {
     if (!savedAvs.keySet.contains(avTag)) {
       val sql = ConfigManager.getKey(avTag, "sql")
 
       val loadedItems = DBManager.getAvList(sql, "av")
+      if (loadedItems.length < 1) {
+        throw new RuntimeException(s"The section ${avTag} doesn't have any data in db")
+      }
       savedAvs(avTag) = loadedItems
     }
 
     var requiredList = savedAvs(avTag)
     val randomizer = new Random
     requiredList(randomizer.nextInt(requiredList.length))
+  }
+
+  def getNext(avTag: String): String = {
+    if (!savedAvs.keySet.contains(avTag)) {
+      val sql = ConfigManager.getKey(avTag, "sql")
+
+      val loadedItems = DBManager.getAvList(sql, "av")
+      if (loadedItems.length < 1) {
+        throw new RuntimeException(s"The section ${avTag} doesn't have any data in db")
+      }
+      savedAvs(avTag) = loadedItems
+      avIterator(avTag) = loadedItems.iterator
+    }
+
+    if (avIterator(avTag).hasNext) {
+      avIterator(avTag).next
+    } else {
+      avIterator(avTag) = savedAvs(avTag).iterator
+      avIterator(avTag).next
+    }
   }
 }
