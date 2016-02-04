@@ -53,6 +53,7 @@ object Boot {
       var result = ConfigParser.parseImportStatement(sectionTag)
       var generatedSql = SqlBuilder.buildImportStatement(sectionTag, result)
       generatedSql.map { x =>
+        log.info("Executing the sql: " + x)
         DBManager.executeInsert(x)
       }
 

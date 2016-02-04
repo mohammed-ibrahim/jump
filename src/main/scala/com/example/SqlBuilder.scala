@@ -40,7 +40,7 @@ object SqlBuilder {
     }
 
     var finalSql = "insert into " + tableName
-    finalSql += "(" + fields + ") values "
+    finalSql += "(" + fields.split(",").map {x => x.trim}.toList.mkString(", ") + ") values "
     finalSql += container.toList.mkString(",")
 
     finalSql
@@ -55,9 +55,7 @@ object SqlBuilder {
       case (key: String, value: String) => {
         val item = buidItem(key, value)
         builder.append(prefix)
-        builder.append("'")
         builder.append(item)
-        builder.append("'")
         prefix = ","
       }
     }
@@ -71,22 +69,30 @@ object SqlBuilder {
 
     strategy match {
       case "fake" => {
-        str = FakeManager.getFake(param)
+        str = wrap(escape(FakeManager.getFake(param)))
       }
 
       case "static" => {
-        str = param
+        str = escape(param)
       }
 
       case "section" => {
-        str = AVManager.getRandom(param)
+        str = wrap(escape(AVManager.getRandom(param)))
       }
 
       case _ => {
-        throw new RuntimeException(s"Unsupported stragegy strategy type: ${strategy}")
+        throw new RuntimeException(s"Unsupported strategy type: ${strategy}")
       }
     }
 
-    str.replace("'", "\\'")
+    str
+  }
+
+  private def wrap(term: String): String = {
+    "'" + term + "'"
+  }
+
+  private def escape(term: String): String = {
+    term.replace("'", "\\'")
   }
 }
