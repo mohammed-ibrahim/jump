@@ -40,7 +40,7 @@ object SqlBuilder {
     }
 
     var finalSql = "insert into " + tableName
-    finalSql += "(" + fields.split(",").map {x => x.trim}.toList.mkString(", ") + ") values "
+    finalSql += "(" + fields.split(",").map { x => x.trim }.toList.mkString(", ") + ") values "
     finalSql += container.toList.mkString(",")
 
     finalSql
