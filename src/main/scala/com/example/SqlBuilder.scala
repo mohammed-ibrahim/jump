@@ -69,7 +69,7 @@ object SqlBuilder {
 
     strategy match {
       case "fake" => {
-        str = wrap(escape(FakeManager.getFake(param)))
+        str = wrap(escape(FakeManager.custom(param)))
       }
 
       case "static" => {

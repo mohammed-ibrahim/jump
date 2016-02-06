@@ -49,11 +49,11 @@ object Boot {
     val runType = ConfigManager.getKey(sectionTag, "type")
     val startAt = (new Date).getTime
 
-    if (runType == "import") {
+    if (runType == "insert") {
       var result = ConfigParser.parseImportStatement(sectionTag)
       var generatedSql = SqlBuilder.buildImportStatement(sectionTag, result)
       generatedSql.map { x =>
-        log.info("Executing the sql: " + x)
+        //log.info("Executing the sql: " + x)
         DBManager.executeInsert(x)
       }
 

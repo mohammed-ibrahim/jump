@@ -24,7 +24,7 @@ object ConfigManager {
     assertSectionExistsWithKeys("db", List("user", "password", "driver", "url"))
     ini.keySet.map{ x =>
       ini.get(x).get("type") match {
-        case "import" => {
+        case "insert" => {
           assertSectionExistsWithKeys(x, List("type", "table", "fields", "stragegy", "rows"))
         }
 
