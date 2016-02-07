@@ -49,11 +49,15 @@ object Boot {
     val runType = ConfigManager.getKey(sectionTag, "type")
     val startAt = (new Date).getTime
 
+    val logSql = if (ConfigManager.getKey("db", "log_sql") == "true") true else false
+
     if (runType == "insert") {
       var result = ConfigParser.parseInsert(sectionTag)
       var generatedSql = SqlBuilder.buildInsert(sectionTag, result)
       generatedSql.map { x =>
-        log.info("Executing the sql: " + x)
+        if (logSql) {
+          log.info("Executing the sql: " + x)
+        }
         DBManager.executeInsert(x)
       }
 
