@@ -10,7 +10,7 @@ import scala.collection.JavaConversions._
 object SqlBuilder {
   val log = Logger(LoggerFactory.getLogger(this.getClass))
 
-  def buildImportStatement(sectionTag: String, params: List[(String, String)]): List[String] = {
+  def buildInsert(sectionTag: String, params: List[(String, String, String)]): List[String] = {
     val numRows = ConfigManager.getKey(sectionTag, "rows").toInt
     val batchSize = AppConfig.conf.getInt("batch_size")
 
@@ -18,21 +18,20 @@ object SqlBuilder {
     val remaining = numRows % batchSize
 
     val tableName = ConfigManager.getKey(sectionTag, "table")
-    val fields = ConfigManager.getKey(sectionTag, "fields")
 
     val builder = new java.util.ArrayList[String]
     for (i <- 0 until totalIterations) {
-      builder.add(buildBatch(params, batchSize, tableName, fields))
+      builder.add(buildBatch(params, batchSize, tableName))
     }
 
     if (remaining > 0) {
-      builder.add(buildBatch(params, remaining, tableName, fields))
+      builder.add(buildBatch(params, remaining, tableName))
     }
 
     builder.toList
   }
 
-  private def buildBatch(params: List[(String, String)], rows: Int, tableName: String, fields: String): String = {
+  private def buildBatch(params: List[(String, String, String)], rows: Int, tableName: String): String = {
     val container = new java.util.ArrayList[String]
 
     for (i <- 0 until rows) {
@@ -40,20 +39,20 @@ object SqlBuilder {
     }
 
     var finalSql = "insert into " + tableName
-    finalSql += "(" + fields.split(",").map { x => x.trim }.toList.mkString(", ") + ") values "
+    finalSql += "(" + params.map (x => x._1).toList.mkString(",") + ") values "
     finalSql += container.toList.mkString(",")
 
     finalSql
   }
 
-  private def buildRow(params: List[(String, String)]): String = {
+  private def buildRow(params: List[(String, String, String)]): String = {
     val builder = new StringBuilder
     var prefix = ""
 
     builder.append("(")
     params.map {
-      case (key: String, value: String) => {
-        val item = buidItem(key, value)
+      case (field: String, func: String, func_param: String) => {
+        val item = buidItem(func, func_param)
         builder.append(prefix)
         builder.append(item)
         prefix = ","
@@ -64,16 +63,16 @@ object SqlBuilder {
     builder.toString
   }
 
-  private def buidItem(strategy: String, param: String): String = {
+  private def buidItem(func: String, param: String): String = {
     var str = ""
 
-    strategy match {
+    func match {
       case "fake" => {
         str = wrap(escape(FakeManager.custom(param)))
       }
 
       case "static" => {
-        str = escape(param)
+        str = param
       }
 
       case "section" => {
@@ -81,7 +80,7 @@ object SqlBuilder {
       }
 
       case _ => {
-        throw new RuntimeException(s"Unsupported strategy type: ${strategy}")
+        throw new RuntimeException(s"Unsupported function: ${func}")
       }
     }
 

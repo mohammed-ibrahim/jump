@@ -50,10 +50,10 @@ object Boot {
     val startAt = (new Date).getTime
 
     if (runType == "insert") {
-      var result = ConfigParser.parseImportStatement(sectionTag)
-      var generatedSql = SqlBuilder.buildImportStatement(sectionTag, result)
+      var result = ConfigParser.parseInsert(sectionTag)
+      var generatedSql = SqlBuilder.buildInsert(sectionTag, result)
       generatedSql.map { x =>
-        //log.info("Executing the sql: " + x)
+        log.info("Executing the sql: " + x)
         DBManager.executeInsert(x)
       }
 

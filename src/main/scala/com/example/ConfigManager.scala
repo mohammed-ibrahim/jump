@@ -25,7 +25,7 @@ object ConfigManager {
     ini.keySet.map{ x =>
       ini.get(x).get("type") match {
         case "insert" => {
-          assertSectionExistsWithKeys(x, List("type", "table", "fields", "stragegy", "rows"))
+          assertSectionExistsWithKeys(x, List("type", "table", "fields", "rows"))
         }
 
         case "permissible-values" => {
