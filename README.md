@@ -15,23 +15,20 @@ url=jdbc:mysql://localhost/temp
 [import-1]
 type=insert
 table=employees
-fields=  name,      dob,       gender,      slug,      salary
-stragegy=fake:name, fake:date, fake:gender, fake:slug, fake:int
-rows=500000
+fields= name=fake(name), dob=fake(date), gender=static('M'), slug=fake(slug), salary=fake(int)
+rows=500
 
 [import-2]
 type=insert
 table=teams
-fields=  name,      founded_year, url,      is_verified
-stragegy=fake:name, fake:year,    fake:url, fake:boolean
-rows=500000
+fields=name=fake(name), founded_year=fake(year), url=fake(url), is_verified=static(1)
+rows=500
 
 [import-3]
 type=insert
 table=employee_teams
-fields=  team_id,           employee_id
-stragegy=section: team-ids, section: employee-ids
-rows=5000000
+fields=  team_id=section(team-ids), employee_id=section(employee-ids)
+rows=5000
 
 [team-ids]
 type=permissible-values
@@ -41,6 +38,17 @@ sql=select id as av from teams
 type=permissible-values
 sql=select id as av from employees
 ```
+
+The above configuration generates the sql
+```sql
+insert into employees(name,dob,gender,slug,salary) values ('Gerard Hessel','1975-10-22 06:15:14.520','M','veritatisquidem','948893'),('Malvina Lind','2031-08-08 06:15:14.524','M','reiciendisipsam','39515')...
+
+insert into teams(name,founded_year,url,is_verified) values ('Dr. Naomie Jerde','2016','www.ldtpmjspzvpgfezdlmqaaxun.com',1),('Dr. Laurie Keebler','2035','www.mabpnavgewvwrqbzr.com',1) ...
+
+insert into employee_teams(team_id,employee_id) values ('501','501'),('502','502'),('503','503') ...
+
+```
+
 
 ## Install
 
