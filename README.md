@@ -11,24 +11,25 @@ user=root
 password=
 driver=com.mysql.jdbc.Driver
 url=jdbc:mysql://localhost/temp
+log_sql=true
 
 [import-1]
 type=insert
 table=employees
 fields= name=fake(name), dob=fake(date), gender=static('M'), slug=fake(slug), salary=fake(int)
-rows=500
+rows=50
 
 [import-2]
 type=insert
 table=teams
-fields=name=fake(name), founded_year=fake(year), url=fake(url), is_verified=static(1)
-rows=500
+fields= name=fake(name), founded_year=fake(year), url=fake(url), is_verified=static(1)
+rows=50
 
 [import-3]
 type=insert
-table=employee_teams
-fields=  team_id=section(team-ids), employee_id=section(employee-ids)
-rows=5000
+table= employee_teams
+fields= team_id=section(team-ids), employee_id=section(employee-ids)
+rows=500
 
 [team-ids]
 type=permissible-values
