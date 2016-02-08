@@ -1,7 +1,7 @@
 # Jump
 Simple scala database importer
 
-Jump helps you generate fake data and import it to your database (for now mysql only). Application requires simple ini config, which will be used to generate data.
+Jump helps you generate fake data and import it to your database (for now mysql only). Application requires simple ini config, which will be used to generate data. For more details on how to create a config for importing data please visit [wiki] (https://github.com/mohammed-ibrahim/jump/wiki)
 
 
 ```ini
