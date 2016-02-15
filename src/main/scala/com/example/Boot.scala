@@ -54,10 +54,14 @@ object Boot {
     if (runType == "insert") {
       var result = ConfigParser.parseInsert(sectionTag)
       var generatedSql = SqlBuilder.buildInsert(sectionTag, result)
+      var batchNum = 0
       generatedSql.map { x =>
         if (logSql) {
           log.info("Executing the sql: " + x)
         }
+
+        batchNum = batchNum + 1
+        log.info(s"Processed batch ${batchNum} with limit ${AppConfig.conf.getInt("batch_size")}");
         DBManager.executeInsert(x)
       }
 

@@ -12,6 +12,10 @@ object ConfigParser {
   def parseInsert(sectionTag: String): List[(String, String, String)] = {
     val fields = ConfigManager.getKey(sectionTag, "fields")
 
+    if (fields.trim.length < 1) {
+      throw new RuntimeException(s"The property [fields] are not mentioned properly in section [${sectionTag}]")
+    }
+
     fields.split(",").map { x =>
       var v = parseField(x)
       (v(0), v(1), v(2))
