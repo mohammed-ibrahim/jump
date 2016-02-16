@@ -37,7 +37,7 @@ object ConfigManager {
         }
 
         case _ => {
-          throw new RuntimeException(s"Unknown configuration type ${x}")
+          throw new RuntimeException(s"Unknown configuration type [${ini.get(x).get("type")}] section [${x}]")
         }
       }
     }
