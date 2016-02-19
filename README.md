@@ -3,6 +3,16 @@ Simple scala database importer
 
 Jump helps you generate fake data and import it to your database (for now mysql only). Application requires simple ini config, which will be used to generate data. For more details on how to create a config for importing data please visit [wiki] (https://github.com/mohammed-ibrahim/jump/wiki)
 
+### Its all about using functions
+Generation of data depends on usage of functions
+
+ + `fake(date)` Generates a fake date.
+ + `static(M)` Always returns the value inside the brackets.
+ + `one_of("Alexander Graham", "Sir Isaac Newton", ...)` Randomly chooses a value for the list and returs.
+ + `serial(one, two, three, four, five)` Serially chooses the values and returns them.
+
+### The game is about using these function in ini configuration to generate the table contents.
+
 
 ```ini
 [db]
@@ -16,28 +26,20 @@ log_sql=true
 [import-1]
 type=insert
 table=employees
-fields= name=fake(name), dob=fake(date), gender=static('M'), slug=fake(slug), salary=fake(int)
+fields= name=fake(name), dob=fake(date), gender=one_of(M, F), slug=fake(slug), salary=fake(int)
 rows=50
 
 [import-2]
 type=insert
 table=teams
-fields= name=fake(name), founded_year=fake(year), url=fake(url), is_verified=static(1)
+fields= name=fake(name), founded_year=fake(year), url=fake(url), is_verified=any_of(0,1)
 rows=50
 
 [import-3]
 type=insert
 table= employee_teams
-fields= team_id=section(team-ids), employee_id=section(employee-ids)
-rows=500
-
-[team-ids]
-type=permissible-values
-sql=select id as av from teams
-
-[employee-ids]
-type=permissible-values
-sql=select id as av from employees
+fields= team_id=sql("select id as av from teams"), employee_id=sql("select id as av from employees")
+rows=50
 ```
 
 The above configuration generates the sql
