@@ -1,14 +1,14 @@
 # Jump
-Simple scala database importer
+Simple database importer
 
-Jump helps you generate fake data and import it to your database (for now mysql only). Application requires simple ini config, which will be used to generate data. For more details on how to create a config for importing data please visit [wiki] (https://github.com/mohammed-ibrahim/jump/wiki)
+Jump helps you generate fake data and import it to your database (mysql only, for now). Application requires simple ini config, which will be used to generate data. For more details on how to create a config for importing data please visit [wiki] (https://github.com/mohammed-ibrahim/jump/wiki)
 
 ### Its all about using functions
-Generation of data depends on usage of functions
+Generation of type of data depends on usage of functions
 
- + `fake(date)` Generates a fake date.
+ + `fake(date)` Generates a fake date, similarly `fake(name)` generates a fake name, and so on. There are bunch of fake-types that can be generated.
  + `static(M)` Always returns the value inside the brackets.
- + `one_of("Alexander Graham", "Sir Isaac Newton", ...)` Randomly chooses a value for the list and returs.
+ + `one_of("Alexander Graham", "Sir Isaac Newton", ...)` Randomly chooses a value for the list and returns.
  + `serial(one, two, three, four, five)` Serially chooses the values and returns them.
  + `sql("select id as av from employees")` Fetches the data from another table and returns them serially, can be used for substituting foreign keys.
 
