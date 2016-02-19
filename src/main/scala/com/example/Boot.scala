@@ -52,6 +52,14 @@ object Boot {
     val logSql = if (ConfigManager.getKey("db", "log_sql") == "true") true else false
 
     if (runType == "insert") {
+      var fieldConfigs = FieldParser.getFields(sectionTag)
+      var fields = FieldFactory.build(sectionTag, fieldConfigs)
+
+      var sqls = SqlBuilder.buildInsert(sectionTag, fields)
+
+      sqls.map (x => println(x))
+
+      /*
       var result = ConfigParser.parseInsert(sectionTag)
       var generatedSql = SqlBuilder.buildInsert(sectionTag, result)
       var batchNum = 0
@@ -64,7 +72,7 @@ object Boot {
         log.info(s"Processed batch ${batchNum} with limit ${AppConfig.conf.getInt("batch_size")}");
         DBManager.executeInsert(x)
       }
-
+      */
       log.info(s"[${sectionTag}] imported ${ConfigManager.getKey(sectionTag, "rows")} rows")
     }
 

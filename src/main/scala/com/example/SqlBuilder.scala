@@ -10,9 +10,13 @@ import scala.collection.JavaConversions._
 object SqlBuilder {
   val log = Logger(LoggerFactory.getLogger(this.getClass))
 
-  def buildInsert(sectionTag: String, params: List[(String, String, String)]): List[String] = {
+  def buildInsert(sectionTag: String, fields: List[Field]): List[String] = {
     val numRows = ConfigManager.getKey(sectionTag, "rows").toInt
     val batchSize = AppConfig.conf.getInt("batch_size")
+
+    if (numRows < 1) {
+      throw new RuntimeException("[rows] should be atleast 1")
+    }
 
     val totalIterations = numRows / batchSize
     val remaining = numRows % batchSize
@@ -21,45 +25,43 @@ object SqlBuilder {
 
     val builder = new java.util.ArrayList[String]
     for (i <- 0 until totalIterations) {
-      builder.add(buildBatch(params, batchSize, tableName))
+      builder.add(buildBatch(fields, batchSize, tableName))
     }
 
     if (remaining > 0) {
-      builder.add(buildBatch(params, remaining, tableName))
+      builder.add(buildBatch(fields, remaining, tableName))
     }
 
     builder.toList
   }
 
-  private def buildBatch(params: List[(String, String, String)], rows: Int, tableName: String): String = {
+  private def buildBatch(fields: List[Field], rows: Int, tableName: String): String = {
     val container = new java.util.ArrayList[String]
 
     for (i <- 0 until rows) {
-      container.add(buildRow(params))
+      container.add(buildRow(fields))
     }
 
     var finalSql = "insert into " + tableName
-    finalSql += "(" + params.map (x => x._1).toList.mkString(",") + ") values "
+    finalSql += "(" + fields.map (x => x.getName).toList.mkString(",") + ") values "
     finalSql += container.toList.mkString(",")
 
     finalSql
   }
 
-  private def buildRow(params: List[(String, String, String)]): String = {
+  private def buildRow(fields: List[Field]): String = {
     val builder = new StringBuilder
     var prefix = ""
 
     builder.append("(")
-    params.map {
-      case (field: String, func: String, func_param: String) => {
-        val item = buidItem(func, func_param)
-        builder.append(prefix)
-        builder.append(item)
-        prefix = ","
-      }
-    }
-    builder.append(")")
 
+    fields.map { x =>
+      builder.append(prefix)
+      builder.append(x.produce)
+      prefix = ","
+    }
+
+    builder.append(")")
     builder.toString
   }
 

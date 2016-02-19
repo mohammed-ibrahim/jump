@@ -28,10 +28,6 @@ object ConfigManager {
           assertSectionExistsWithKeys(x, List("type", "table", "fields", "rows"))
         }
 
-        case "permissible-values" => {
-          assertSectionExistsWithKeys(x, List("type", "sql"))
-        }
-
         case "db" => {
           //do nothing already verified above
         }
