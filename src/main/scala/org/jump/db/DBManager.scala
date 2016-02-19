@@ -16,8 +16,6 @@ import org.jump.manager._
 object DBManager {
   val log = Logger(LoggerFactory.getLogger(this.getClass))
 
-  val savedAvs = Map[String, List[String]]()
-
   private var connection: Connection = null
 
   def init() = {
@@ -56,14 +54,16 @@ object DBManager {
     stmt.close
   }
 
-  def closeConn(rollback: Boolean) = {
+  def commitAndClose() = {
     if (connection != null) {
-      if (rollback) {
-        connection.rollback
-      } else {
-        connection.commit
-      }
+      connection.commit
+      connection.close
+    }
+  }
 
+  def rollbackAndClose() = {
+    if (connection != null) {
+      connection.rollback
       connection.close
     }
   }

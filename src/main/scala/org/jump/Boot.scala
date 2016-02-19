@@ -38,14 +38,15 @@ object Boot {
       IniManager.ini.keySet.map { x =>
         runSection(x)
       }
-      DBManager.closeConn(false)
-      log.info("Successfully completed: commiting changes")
+      DBManager.commitAndClose
+      log.info("Successfully completed: [COMMITED CHANGES]")
     } catch {
       case e: Exception => {
-        DBManager.closeConn(true)
+        DBManager.rollbackAndClose
         val sw = new StringWriter
         e.printStackTrace(new PrintWriter(sw))
-        log.error("Failed with error: rolling back: " + sw.toString)
+        log.error(sw.toString)
+        log.error("FAILED! [ROLLED BACK CHANGES]")
       }
     }
   }
