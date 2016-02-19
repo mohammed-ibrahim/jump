@@ -1,4 +1,4 @@
-package com.example
+package org.jump.manager
 
 import com.typesafe.scalalogging._
 import org.slf4j.LoggerFactory

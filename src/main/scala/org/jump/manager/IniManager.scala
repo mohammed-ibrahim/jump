@@ -1,4 +1,4 @@
-package com.example
+package org.jump.manager
 
 import com.typesafe.scalalogging._
 import org.slf4j.LoggerFactory
@@ -10,7 +10,9 @@ import java.io.FileReader
 import scala.collection.mutable.Map
 import scala.collection.JavaConversions._
 
-object ConfigManager {
+import org.jump.common._
+
+object IniManager {
   val log = Logger(LoggerFactory.getLogger(this.getClass))
   var ini: Ini = null
 

@@ -1,4 +1,4 @@
-package com.example
+package org.jump.factory
 
 import com.typesafe.scalalogging._
 import org.slf4j.LoggerFactory
@@ -8,11 +8,16 @@ import java.io.FileReader
 import scala.collection.JavaConversions._
 
 import org.jump.parser._
+import org.jump.entity._
+import org.jump.db._
+import org.jump.common._
 
 object FieldFactory {
   val log = Logger(LoggerFactory.getLogger(this.getClass))
 
-  def build(sectionTag: String, fields: List[FieldConfig]): List[Field] = {
+  def build(sectionTag: String): List[Field] = {
+    var fields = ParameterParser.getFields(sectionTag)
+
     fields.map { x =>
       buildField(sectionTag, x)
     }.toList
@@ -29,6 +34,10 @@ object FieldFactory {
     if (crawlerTypes.contains(field.getFnName)) {
       new CrawlerField(field, buildCrawler(sectionTag, field))
     } else {
+      if (field.getParams.size != 1) {
+        throw new RuntimeException("The function [fake] takes only 1 parameter")
+      }
+
       new FakerField(field)
     }
   }

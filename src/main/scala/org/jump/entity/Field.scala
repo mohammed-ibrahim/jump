@@ -1,4 +1,4 @@
-package com.example
+package org.jump.entity
 
 import com.typesafe.scalalogging._
 import org.slf4j.LoggerFactory
@@ -12,12 +12,13 @@ import org.jump.parser._
 import java.util.Random
 import scala.collection.JavaConversions._
 
-import com.example.Formatter._
+import org.jump.common.Formatter._
+import org.jump.manager._
 
 trait Field {
-  def produce(): String
-
   def getName(): String
+
+  def produce(): String
 }
 
 class CrawlerField(config: FieldConfig, crawler: Crawler) extends Field {

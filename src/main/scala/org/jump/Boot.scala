@@ -1,4 +1,4 @@
-package com.example
+package org.jump
 
 import com.typesafe.scalalogging._
 import org.slf4j.LoggerFactory
@@ -11,6 +11,11 @@ import java.util.Date
 import java.io.StringWriter
 import java.io.PrintWriter
 import java.io.File
+
+import org.jump.factory._
+import org.jump.manager._
+import org.jump.db._
+import org.jump.common._
 
 object Boot {
   val log = Logger(LoggerFactory.getLogger(this.getClass))
@@ -27,10 +32,10 @@ object Boot {
         throw new RuntimeException(s"The configuration file [${fileName}] doesn't exists or is not accesssible to the application.")
       }
 
-      ConfigManager.load(fileName)
+      IniManager.load(fileName)
       DBManager.init
 
-      ConfigManager.ini.keySet.map { x =>
+      IniManager.ini.keySet.map { x =>
         runSection(x)
       }
       DBManager.closeConn(false)
@@ -46,24 +51,16 @@ object Boot {
   }
 
   def runSection(sectionTag: String): Unit = {
-    val runType = ConfigManager.getKey(sectionTag, "type")
+    val runType = IniManager.getKey(sectionTag, "type")
     val startAt = (new Date).getTime
-
-    val logSql = if (ConfigManager.getKey("db", "log_sql") == "true") true else false
+    val logSql = if (IniManager.getKey("db", "log_sql") == "true") true else false
 
     if (runType == "insert") {
-      var fieldConfigs = FieldParser.getFields(sectionTag)
-      var fields = FieldFactory.build(sectionTag, fieldConfigs)
+      var fields = FieldFactory.build(sectionTag)
+      var sqlList = SqlBuilder.buildInsert(sectionTag, fields)
 
-      var sqls = SqlBuilder.buildInsert(sectionTag, fields)
-
-      sqls.map (x => println(x))
-
-      /*
-      var result = ConfigParser.parseInsert(sectionTag)
-      var generatedSql = SqlBuilder.buildInsert(sectionTag, result)
       var batchNum = 0
-      generatedSql.map { x =>
+      sqlList.map { x =>
         if (logSql) {
           log.info("Executing the sql: " + x)
         }
@@ -72,8 +69,7 @@ object Boot {
         log.info(s"Processed batch ${batchNum} with limit ${AppConfig.conf.getInt("batch_size")}");
         DBManager.executeInsert(x)
       }
-      */
-      log.info(s"[${sectionTag}] imported ${ConfigManager.getKey(sectionTag, "rows")} rows")
+      log.info(s"[${sectionTag}] imported ${IniManager.getKey(sectionTag, "rows")} rows")
     }
 
     val endAt = (new Date).getTime
