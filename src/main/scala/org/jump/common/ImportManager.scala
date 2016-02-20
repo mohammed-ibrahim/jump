@@ -9,11 +9,12 @@ import scala.collection.JavaConversions._
 
 import org.jump.entity._
 import org.jump.manager._
+import org.jump.db._
 
-object SqlBuilder {
+object ImportManager {
   val log = Logger(LoggerFactory.getLogger(this.getClass))
 
-  def buildInsert(sectionTag: String, fields: List[Field]): List[String] = {
+  def process(sectionTag: String, fields: List[Field], logSql: Boolean): Unit = {
     val numRows = IniManager.getKey(sectionTag, "rows").toInt
     val batchSize = AppConfig.conf.getInt("batch_size")
 
@@ -25,17 +26,27 @@ object SqlBuilder {
     val remaining = numRows % batchSize
 
     val tableName = IniManager.getKey(sectionTag, "table")
+    var total = 0
 
-    val builder = new java.util.ArrayList[String]
     for (i <- 0 until totalIterations) {
-      builder.add(buildBatch(fields, batchSize, tableName))
+      val sql = buildBatch(fields, batchSize, tableName)
+      if (logSql) {
+        log.info("Sql: " + sql);
+      }
+      DBManager.executeInsert(sql)
+      total = total + batchSize
+      log.info(s"[${sectionTag}] Inserted [${total}] rows")
     }
 
     if (remaining > 0) {
-      builder.add(buildBatch(fields, remaining, tableName))
+      val sql = buildBatch(fields, remaining, tableName)
+      if (logSql) {
+        log.info("Sql: " + sql);
+      }
+      DBManager.executeInsert(sql)
+      total = total + remaining
+      log.info(s"[${sectionTag}] Inserted [${total}] rows")
     }
-
-    builder.toList
   }
 
   private def buildBatch(fields: List[Field], rows: Int, tableName: String): String = {

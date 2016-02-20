@@ -24,7 +24,7 @@ object FieldFactory {
   }
 
   def buildField(sectionTag: String, field: FieldConfig): Field = {
-    var crawlerTypes = Set("one_of", "static", "serial", "sql", "between")
+    var crawlerTypes = Set("one_of", "static", "serial", "sql", "between", "random_between")
     var supported = crawlerTypes ++ Set("fake")
 
     if (!supported.contains(field.getFnName)) {
@@ -44,16 +44,17 @@ object FieldFactory {
 
   private def buildCrawler(sectionTag: String, field: FieldConfig): Crawler = {
     field.getFnName match {
-      //TODO: ADD BETWEEN
-      case "between" => buildBetweenCrawler(sectionTag, field)
+      case "random_between" => buildRandomBetweenCrawler(sectionTag, field)
 
-      case "one_of"  => buildOneOfCrawler(sectionTag, field)
+      case "between"        => buildBetweenCrawler(sectionTag, field)
 
-      case "static"  => buildStaticCrawler(sectionTag, field)
+      case "one_of"         => buildOneOfCrawler(sectionTag, field)
 
-      case "serial"  => buildSerialCrawler(sectionTag, field)
+      case "static"         => buildStaticCrawler(sectionTag, field)
 
-      case "sql"     => buildSqlCrawler(sectionTag, field)
+      case "serial"         => buildSerialCrawler(sectionTag, field)
+
+      case "sql"            => buildSqlCrawler(sectionTag, field)
 
       case _ => {
         throw new RuntimeException("Unknown function " + field.getFnName)
@@ -142,5 +143,27 @@ object FieldFactory {
     }
 
     new Crawler((start to end).toList.map (x => x.toString).toList, "serial", 1, sectionTag)
+  }
+
+  private def buildRandomBetweenCrawler(sectionTag: String, field: FieldConfig): Crawler = {
+    if (field.getParams.size != 2) {
+      throw new RuntimeException(s"The function [between] takes two parameters [between(int, int)], section [${sectionTag}]")
+    }
+
+    var v1 = field.getParams.get(0)
+    var v2 = field.getParams.get(1)
+
+    if (!isDigit(v1) || !isDigit(v2)) {
+      throw new RuntimeException(s"The function [between] requires both parameters to be int [between(int, int)], section [${sectionTag}]")
+    }
+
+    var start = Math.min(v1.toInt, v2.toInt)
+    var end = Math.max(v1.toInt, v2.toInt)
+
+    if (start == end) {
+      throw new RuntimeException(s"The function [between] parameter 1 should be greater than parameter 2 [between(int, int)], section [${sectionTag}]")
+    }
+
+    new Crawler((start to end).toList.map (x => x.toString).toList, "random", 1, sectionTag)
   }
 }

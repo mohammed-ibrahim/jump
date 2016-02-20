@@ -58,19 +58,7 @@ object Boot {
 
     if (runType == "insert") {
       var fields = FieldFactory.build(sectionTag)
-      var sqlList = SqlBuilder.buildInsert(sectionTag, fields)
-
-      var batchNum = 0
-      sqlList.map { x =>
-        if (logSql) {
-          log.info("Executing the sql: " + x)
-        }
-
-        batchNum = batchNum + 1
-        log.info(s"Processed batch ${batchNum} with limit ${AppConfig.conf.getInt("batch_size")}");
-        DBManager.executeInsert(x)
-      }
-      log.info(s"[${sectionTag}] imported ${IniManager.getKey(sectionTag, "rows")} rows")
+      var sqlList = ImportManager.process(sectionTag, fields, logSql)
     }
 
     val endAt = (new Date).getTime
