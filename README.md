@@ -11,6 +11,8 @@ Generation of type of data depends on usage of functions
  + `one_of("Alexander Graham", "Sir Isaac Newton", ...)` Randomly chooses a value for the list and returns.
  + `serial(one, two, three, four, five)` Serially chooses the values and returns them.
  + `sql("select id as av from employees")` Fetches the data from another table and returns them serially, can be used for substituting foreign keys.
+ + `between(1, 1000)` Serially returns values from 1 to 1000.
+ + `random_between(1, 1000)` Randomly chooses a value between 1 and 1000 and returns.
 
 ### The game is about using these function in ini configuration to generate the table contents.
 
