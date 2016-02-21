@@ -10,7 +10,7 @@ Generation of type of data depends on usage of functions
  + `static(M)` Always returns the value inside the brackets.
  + `one_of("Alexander Graham", "Sir Isaac Newton", ...)` Randomly chooses a value for the list and returns.
  + `serial(one, two, three, four, five)` Serially chooses the values and returns them.
- + `sql("select id as av from employees")` Fetches the data from another table and returns them serially, can be used for substituting foreign keys.
+ + `sql("select id from employees")` Fetches the first field from another table and returns them serially, can be used for substituting foreign keys.
  + `between(1, 1000)` Serially returns values from 1 to 1000.
  + `random_between(1, 1000)` Randomly chooses a value between 1 and 1000 and returns.
 
