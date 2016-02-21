@@ -8,7 +8,7 @@ Generation of type of data depends on usage of functions
 
  + `fake(date)` Generates a fake date, similarly `fake(name)` generates a fake name, and so on. There are bunch of fake-types that can be generated.
  + `static(M)` Always returns the value inside the brackets.
- + `one_of("Alexander Graham", "Sir Isaac Newton", ...)` Randomly chooses a value for the list and returns.
+ + `one_of("Alexander Graham Bell", "Sir Isaac Newton", ...)` Randomly chooses a value for the list and returns.
  + `serial(one, two, three, four, five)` Serially chooses the values and returns them.
  + `sql("select id from employees")` Fetches the first field from another table and returns them serially, can be used for substituting foreign keys.
  + `between(1, 1000)` Serially returns values from 1 to 1000.
