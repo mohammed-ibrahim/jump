@@ -22,14 +22,14 @@ object DBManager {
     connection = getConnection
   }
 
-  def getAvList(sql: String, columnName: String): List[String] = {
+  def getAvList(sql: String): List[String] = {
     val avList = new java.util.ArrayList[String]()
 
     val stmt = this.connection.createStatement
     val rs = stmt.executeQuery(sql)
 
     while (rs.next) {
-      avList.add(rs.getString(columnName))
+      avList.add(rs.getString(1))
     }
 
     stmt.close

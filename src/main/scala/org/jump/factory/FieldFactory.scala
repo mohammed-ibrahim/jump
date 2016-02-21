@@ -98,7 +98,7 @@ object FieldFactory {
       }
     }
 
-    val avList = DBManager.getAvList(sql, "av")
+    val avList = DBManager.getAvList(sql)
 
     new Crawler(avList, "serial", numInterations, sectionTag)
   }
