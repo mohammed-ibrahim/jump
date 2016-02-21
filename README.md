@@ -77,18 +77,11 @@ The current java version can be checked using `java -version`
 
 ### How to use it
 
-the uber-jar should reside in
+Download the jar from the [link] (https://github.com/mohammed-ibrahim/jump/blob/master/jump-1.0.jar?raw=true)
 
 #### 1. Create a one-jar
 
 ```
-./activator one-jar
+java -jar jump-1.0.jar <input-configuration-file>
 ```
 
-the one-jar should reside in `target/scala-x.xx/jump_x.xx-x.x-one-jar.jar`
-
-#### 2. run the one-jar with
-
-```
-java -jar jump_x.xx-x.x-one-jar.jar <the-input-ini-configuration-file>
-```
