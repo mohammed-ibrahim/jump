@@ -19,7 +19,6 @@ Generation of type of data depends on usage of functions
 
 ```ini
 [db]
-[db]
 type=db
 user=root
 password=
