@@ -1,5 +1,5 @@
 <configuration>
-  <property name="LOG_FILE" value="/home/vagrant/www/work/jump/output.log" />
+  <property name="LOG_FILE" value="output-jump.log" />
 
   <!-- Remove in production -->
  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
