@@ -19,37 +19,38 @@ Generation of type of data depends on usage of functions
 
 ```ini
 [db]
+[db]
 type=db
 user=root
 password=
 driver=com.mysql.jdbc.Driver
 url=jdbc:mysql://localhost/temp
-log_sql=true
+log_sql=false
 
 [import-1]
 type=insert
 table=employees
-fields= name=fake(name), dob=fake(date), gender=one_of(M, F), slug=fake(slug), salary=fake(int)
-rows=50
+fields=name=fake(name), dob=fake(date), gender=any_of(M, F), slug=fake(slug), salary=random_between(100, 200)
+rows=100
 
 [import-2]
 type=insert
 table=teams
-fields= name=fake(name), founded_year=fake(year), url=fake(url), is_verified=any_of(0,1)
-rows=50
+fields=name=fake(name), founded_year=fake(year), url=fake(url), is_verified=static(1)
+rows=100
 
 [import-3]
 type=insert
-table= employee_teams
-fields= team_id=sql("select id as av from teams"), employee_id=sql("select id as av from employees")
-rows=50
+table=employee_teams
+fields= team_id = sql("select id from teams"), employee_id = sql("select id from employees")
+rows=100
 ```
 
 The above configuration generates the sql
 ```sql
-insert into employees(name,dob,gender,slug,salary) values ('Gerard Hessel','1975-10-22 06:15:14.520','M','veritatisquidem','948893'),('Malvina Lind','2031-08-08 06:15:14.524','M','reiciendisipsam','39515')...
+insert into employees(name,dob,gender,slug,salary) values ('Gerard Hessel','1975-10-22 06:15:14.520','M','veritatisquidem','125'),('Malvina Lind','2031-08-08 06:15:14.524','M','reiciendisipsam','45')...
 
-insert into teams(name,founded_year,url,is_verified) values ('Dr. Naomie Jerde','2016','www.ldtpmjspzvpgfezdlmqaaxun.com',1),('Dr. Laurie Keebler','2035','www.mabpnavgewvwrqbzr.com',1) ...
+insert into teams(name,founded_year,url,is_verified) values ('Dr. Naomie Jerde','2016','www.ldtpmjspzvpgfezdlmqaaxun.com','1'),('Dr. Laurie Keebler','2035','www.mabpnavgewvwrqbzr.com','1') ...
 
 insert into employee_teams(team_id,employee_id) values ('501','501'),('502','502'),('503','503') ...
 
