@@ -79,7 +79,7 @@ The current java version can be checked using `java -version`
 
 Download the jar from the [link] (https://github.com/mohammed-ibrahim/jump/blob/master/jump-1.0.jar?raw=true)
 
-#### 1. Create a one-jar
+#### 1. Run the jar using the command below:
 
 ```
 java -jar jump-1.0.jar <input-configuration-file>
