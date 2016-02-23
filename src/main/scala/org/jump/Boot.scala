@@ -22,10 +22,12 @@ object Boot {
   def main(args: Array[String]): Unit = {
 
     try {
-      var fileName = "sample.ini"
-      if (args.length == 1) {
-        fileName = args(0)
+      var fileName = ""
+      if (args.length != 1) {
+        println("Usage: java -jar jump-1.0.jar <input-configuration-file>")
+        return
       }
+      fileName = args(0)
 
       val file = new File(fileName)
       if (!file.exists()) {
