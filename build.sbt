@@ -26,7 +26,7 @@ ScalariformKeys.preferences := ScalariformKeys.preferences.value
   .setPreference(IndentSpaces, 2)
 
 mappings in oneJar += (file("src/main/resources/application.conf"),"models")
-mappings in oneJar += (file("src/main/resources/logback.xml"),"logback.xml")
+//mappings in oneJar += (file("src/main/resources/logback.xml"),"logback.xml")
 
 name := """jump"""
 
@@ -47,10 +47,10 @@ libraryDependencies += "org.scalaz" % "scalaz-core_2.11" % "7.0.6"
 //libraryDependencies += "com.typesafe.akka" %% "akka-actor" % "2.3.11"
 libraryDependencies += "com.typesafe" % "config" % "1.2.1"
 
-libraryDependencies ++= Seq(
-  "ch.qos.logback"  %  "logback-classic"   % "1.1.3",
-  "com.typesafe.scala-logging" %% "scala-logging" % "3.1.0"
-)
+//libraryDependencies ++= Seq(
+//  "ch.qos.logback"  %  "logback-classic"   % "1.1.3",
+//  "com.typesafe.scala-logging" %% "scala-logging" % "3.1.0"
+//)
 
 javaOptions += "-Xmx3G"
 

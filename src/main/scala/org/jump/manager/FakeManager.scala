@@ -1,8 +1,5 @@
 package org.jump.manager
 
-import com.typesafe.scalalogging._
-import org.slf4j.LoggerFactory
-
 import org.ini4j.Ini
 import java.io.FileReader
 import com.github.mirreck._
@@ -12,8 +9,6 @@ import java.text.SimpleDateFormat
 import scala.collection.JavaConversions._
 
 object FakeManager {
-  val log = Logger(LoggerFactory.getLogger(this.getClass))
-
   val factory = new FakeFactory
 
   val randomizer = new Random

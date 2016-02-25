@@ -1,8 +1,5 @@
 package org.jump
 
-import com.typesafe.scalalogging._
-import org.slf4j.LoggerFactory
-
 import org.ini4j.Ini
 import java.io.FileReader
 import scala.collection.JavaConversions._
@@ -16,9 +13,10 @@ import org.jump.factory._
 import org.jump.manager._
 import org.jump.db._
 import org.jump.common._
+import org.jump.logging._
 
 object Boot {
-  val log = Logger(LoggerFactory.getLogger(this.getClass))
+  val log = LogManager.createInstance(this.getClass.getName)
   def main(args: Array[String]): Unit = {
 
     try {
@@ -47,8 +45,8 @@ object Boot {
         DBManager.rollbackAndClose
         val sw = new StringWriter
         e.printStackTrace(new PrintWriter(sw))
-        log.error(sw.toString)
-        log.error("FAILED! [ROLLED BACK CHANGES]")
+        log.severe(sw.toString)
+        log.severe("FAILED! [ROLLED BACK CHANGES]")
       }
     }
   }

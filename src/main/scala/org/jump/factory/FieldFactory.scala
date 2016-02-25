@@ -1,8 +1,5 @@
 package org.jump.factory
 
-import com.typesafe.scalalogging._
-import org.slf4j.LoggerFactory
-
 import org.ini4j.Ini
 import java.io.FileReader
 import scala.collection.JavaConversions._
@@ -13,8 +10,6 @@ import org.jump.db._
 import org.jump.common._
 
 object FieldFactory {
-  val log = Logger(LoggerFactory.getLogger(this.getClass))
-
   def build(sectionTag: String): List[Field] = {
     var fields = ParameterParser.getFields(sectionTag)
 

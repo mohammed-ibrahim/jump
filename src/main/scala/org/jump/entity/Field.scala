@@ -1,7 +1,5 @@
 package org.jump.entity
 
-import com.typesafe.scalalogging._
-import org.slf4j.LoggerFactory
 import java.sql._
 import com.typesafe.config.ConfigFactory
 

@@ -1,7 +1,5 @@
 package org.jump.db
 
-import com.typesafe.scalalogging._
-import org.slf4j.LoggerFactory
 import java.sql._
 
 import scalaz._
@@ -14,7 +12,6 @@ import scala.collection.JavaConversions._
 import org.jump.manager._
 
 object DBManager {
-  val log = Logger(LoggerFactory.getLogger(this.getClass))
 
   private var connection: Connection = null
 

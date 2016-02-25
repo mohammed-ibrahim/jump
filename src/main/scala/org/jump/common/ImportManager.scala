@@ -1,18 +1,16 @@
 package org.jump.common
 
-import com.typesafe.scalalogging._
-import org.slf4j.LoggerFactory
-
 import org.ini4j.Ini
 import java.io.FileReader
 import scala.collection.JavaConversions._
 
 import org.jump.entity._
 import org.jump.manager._
+import org.jump.logging._
 import org.jump.db._
 
 object ImportManager {
-  val log = Logger(LoggerFactory.getLogger(this.getClass))
+  val log = LogManager.createInstance(this.getClass.getName)
 
   def process(sectionTag: String, fields: List[Field], logSql: Boolean): Unit = {
     val numRows = IniManager.getKey(sectionTag, "rows").toInt

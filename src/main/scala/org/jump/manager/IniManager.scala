@@ -1,7 +1,5 @@
 package org.jump.manager
 
-import com.typesafe.scalalogging._
-import org.slf4j.LoggerFactory
 import java.sql._
 
 import org.ini4j._
@@ -13,7 +11,6 @@ import scala.collection.JavaConversions._
 import org.jump.common._
 
 object IniManager {
-  val log = Logger(LoggerFactory.getLogger(this.getClass))
   var ini: Ini = null
 
   def load(fileName: String): Unit = {
