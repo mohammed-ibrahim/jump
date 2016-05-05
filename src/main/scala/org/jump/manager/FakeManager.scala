@@ -30,72 +30,74 @@ object FakeManager {
 
     val supported = List("name", "name_title", "int", "long", "float", "double", "first_name", "last_name", "month", "year", "date",
       "current_date", "time_stamp", "zipcode", "country", "city", "address", "street_address", "latitude", "longitude", "color", "height",
-      "phone_number", "email", "gender", "true_false", "boolean", "slug", "website", "url")
+      "phone_number", "email", "gender", "true_false", "boolean", "slug", "website", "url", "ten_dig_phone_num")
 
     input match {
-      case "name"           => factory.name
+      case "name"              => factory.name
 
-      case "name_title"     => factory.nameTitle
+      case "name_title"        => factory.nameTitle
 
-      case "int"            => factory.digits(random(2, 8))
+      case "int"               => factory.digits(random(2, 8))
 
-      case "long"           => factory.digits(random(4, 11))
+      case "long"              => factory.digits(random(4, 11))
 
-      case "float"          => factory.digits(random(1, 3)) + "." + factory.digits(random(1, 2))
+      case "float"             => factory.digits(random(1, 3)) + "." + factory.digits(random(1, 2))
 
-      case "double"         => factory.digits(random(3, 5)) + "." + factory.digits(random(1, 2))
+      case "double"            => factory.digits(random(3, 5)) + "." + factory.digits(random(1, 2))
 
-      case "first_name"     => factory.firstName
+      case "first_name"        => factory.firstName
 
-      case "last_name"      => factory.lastName
+      case "last_name"         => factory.lastName
 
-      case "month"          => months(randomizer.nextInt(months.length))
+      case "month"             => months(randomizer.nextInt(months.length))
 
-      case "sentence"       => factory.sentence
+      case "sentence"          => factory.sentence
 
-      case "paragraph"      => factory.paragraph
+      case "paragraph"         => factory.paragraph
 
-      case "year"           => random(1990, 2050).toString
+      case "year"              => random(1990, 2050).toString
 
-      case "date"           => getDate
+      case "date"              => getDate
 
-      case "current_date"   => getCurrentDate
+      case "current_date"      => getCurrentDate
 
-      case "time_stamp"     => getDate
+      case "time_stamp"        => getDate
 
-      case "zipcode"        => factory.zipCode
+      case "zipcode"           => factory.zipCode
 
-      case "country"        => factory.country
+      case "country"           => factory.country
 
-      case "city"           => factory.city
+      case "city"              => factory.city
 
-      case "address"        => factory.fullAddress.toList.mkString(" ")
+      case "address"           => factory.fullAddress.toList.mkString(" ")
 
-      case "street_address" => factory.streetAddress
+      case "street_address"    => factory.streetAddress
 
-      case "latitude"       => factory.coordinatesLatLng()(0).toString
+      case "latitude"          => factory.coordinatesLatLng()(0).toString
 
-      case "longitude"      => factory.coordinatesLatLng()(1).toString
+      case "longitude"         => factory.coordinatesLatLng()(1).toString
 
-      case "color"          => factory.eyeColor
+      case "color"             => factory.eyeColor
 
-      case "height"         => factory.height.toString
+      case "height"            => factory.height.toString
 
-      case "phone_number"   => factory.phoneNumber
+      case "phone_number"      => factory.phoneNumber
 
-      case "email"          => factory.email
+      case "email"             => factory.email
 
-      case "gender"         => genders(randomizer.nextInt(genders.length))
+      case "gender"            => genders(randomizer.nextInt(genders.length))
 
-      case "true_false"     => trueFalse(randomizer.nextInt(trueFalse.length))
+      case "true_false"        => trueFalse(randomizer.nextInt(trueFalse.length))
 
-      case "boolean"        => boolValues(randomizer.nextInt(boolValues.length))
+      case "boolean"           => boolValues(randomizer.nextInt(boolValues.length))
 
-      case "slug"           => factory.words(random(2, 5)).mkString("").map(x => x.toLower)
+      case "slug"              => factory.words(random(2, 5)).mkString("").map(x => x.toLower)
 
-      case "website"        => getUrl
+      case "website"           => getUrl
 
-      case "url"            => getUrl
+      case "url"               => getUrl
+
+      case "ten_dig_phone_num" => getTenDigNum
 
       case _ => {
         throw new RuntimeException(s"Not supported fake-param [${input}], only supported values are: [${supported.mkString(",")}]")
@@ -105,6 +107,11 @@ object FakeManager {
 
   def random(low: Int, high: Int): Int = {
     randomizer.nextInt(high - low) + low
+  }
+
+  def getTenDigNum(): String = {
+    val input = 8943767676L + random(1, 1000000)
+    input.toString
   }
 
   def getCurrentDate(): String = {
