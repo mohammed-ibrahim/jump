@@ -34,3 +34,11 @@ class FakerField(config: FieldConfig) extends Field {
     wrap(escape(FakeManager.custom(config.getParams.toList(0))))
   }
 }
+
+class NowField(config: FieldConfig) extends Field {
+  def getName(): String = config.getFieldName
+
+  def produce(): String = {
+    "now()"
+  }
+}

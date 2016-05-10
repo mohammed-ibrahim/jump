@@ -20,21 +20,25 @@ object FieldFactory {
 
   def buildField(sectionTag: String, field: FieldConfig): Field = {
     var crawlerTypes = Set("one_of", "static", "serial", "sql", "between", "random_between")
-    var supported = crawlerTypes ++ Set("fake")
+    var supported = crawlerTypes ++ Set("fake") ++ Set("now")
 
     if (!supported.contains(field.getFnName)) {
       throw new RuntimeException(s"Unknown function [${field.getFnName}]")
     }
 
     if (crawlerTypes.contains(field.getFnName)) {
-      new CrawlerField(field, buildCrawler(sectionTag, field))
-    } else {
+      return new CrawlerField(field, buildCrawler(sectionTag, field))
+    } else if (field.getFnName == "fake") {
       if (field.getParams.size != 1) {
         throw new RuntimeException("The function [fake] takes only 1 parameter")
       }
 
-      new FakerField(field)
+      return new FakerField(field)
+    } else if (field.getFnName == "now") {
+      return new NowField(field)
     }
+
+    throw new RuntimeException(s"Unknown function [${field.getFnName}]")
   }
 
   private def buildCrawler(sectionTag: String, field: FieldConfig): Crawler = {

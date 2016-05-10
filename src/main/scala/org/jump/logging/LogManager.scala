@@ -10,6 +10,7 @@ import scala.collection.JavaConversions._
 import java.util.logging._
 
 object LogManager {
+  val lineSpearator: String = System.getProperty("line.separator")
 
   def createInstance(name: String): Logger = {
     var logger = Logger.getLogger(name)
@@ -30,5 +31,5 @@ object LogManager {
 }
 
 class BriefFormatter extends Formatter {
-  def format(record: LogRecord): String = { record.getMessage + System.getProperty("line.separator") }
+  def format(record: LogRecord): String = { record.getMessage + LogManager.lineSpearator }
 }
