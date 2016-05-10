@@ -45,7 +45,7 @@ object DBManager {
     conn
   }
 
-  def executeInsert(sql: String): Unit = {
+  def execute(sql: String): Unit = {
     val stmt = connection.createStatement
     stmt.executeUpdate(sql)
     stmt.close

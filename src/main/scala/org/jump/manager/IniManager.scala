@@ -31,6 +31,10 @@ object IniManager {
           //do nothing already verified above
         }
 
+        case "sql" => {
+          assertSectionExistsWithKeys(x, List("type", "sql"))
+        }
+
         case _ => {
           throw new RuntimeException(s"Unknown configuration type [${ini.get(x).get("type")}] section [${x}]")
         }

@@ -61,6 +61,13 @@ object Boot {
       var sqlList = ImportManager.process(sectionTag, fields, logSql)
     }
 
+    if (runType == "sql") {
+      val sql = IniManager.getKey(sectionTag, "sql")
+      if (logSql) {
+        log.info("Executing the sql: " + sql);
+      }
+      DBManager.execute(sql)
+    }
     val endAt = (new Date).getTime
 
     log.info(s"[${sectionTag}] total time: ${(endAt - startAt).toString} ms")

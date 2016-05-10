@@ -31,7 +31,7 @@ object ImportManager {
       if (logSql) {
         log.info("Sql: " + sql);
       }
-      DBManager.executeInsert(sql)
+      DBManager.execute(sql)
       total = total + batchSize
       log.info(s"[${sectionTag}] Inserted [${total}] rows")
     }
@@ -41,7 +41,7 @@ object ImportManager {
       if (logSql) {
         log.info("Sql: " + sql);
       }
-      DBManager.executeInsert(sql)
+      DBManager.execute(sql)
       total = total + remaining
       log.info(s"[${sectionTag}] Inserted [${total}] rows")
     }
