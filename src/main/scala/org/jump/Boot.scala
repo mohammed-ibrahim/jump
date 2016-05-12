@@ -43,7 +43,9 @@ object Boot {
 
       val fileContents = getFileContents(fileName)
       val commands = JumpGen.parse(fileContents)
-      println(commands)
+      if (commands == null) {
+        return ;
+      }
 
       DBManager.init
       var index = 1

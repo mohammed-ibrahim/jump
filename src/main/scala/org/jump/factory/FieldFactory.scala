@@ -24,7 +24,7 @@ object FieldFactory {
   }
 
   def buildField(commandNumber: String, field: FieldConfig): Field = {
-    var crawlerTypes = Set("one_of", "static", "serial", "sql", "between", "random_between")
+    var crawlerTypes = Set("one_of", "static", "serial", "from_sql", "between", "random_between")
     var supported = crawlerTypes ++ Set("fake") ++ Set("now")
 
     if (!supported.contains(field.getFnName)) {
@@ -58,7 +58,7 @@ object FieldFactory {
 
       case "serial"         => buildSerialCrawler(commandNumber, field)
 
-      case "sql"            => buildSqlCrawler(commandNumber, field)
+      case "from_sql"       => buildSqlCrawler(commandNumber, field)
 
       case _ => {
         throw new RuntimeException("Unknown function " + field.getFnName)
@@ -83,8 +83,8 @@ object FieldFactory {
   private def buildSqlCrawler(commandNumber: String, field: FieldConfig): Crawler = {
     val params = field.getParams.toList
     if (!Set(1, 2).contains(params.size)) {
-      val msg1 = s"The method [sql] can be called with either 1 or 2 parameters: Field [${commandNumber}]"
-      val msg2 = "1. [sql(<sql_query>)] or 2. [sql(<sql_query>, int)]"
+      val msg1 = s"The method [from_sql] can be called with either 1 or 2 parameters: Field [${commandNumber}]"
+      val msg2 = "1. [from_sql(<sql_query>)] or 2. [from_sql(<sql_query>, int)]"
       throw new RuntimeException(msg1 + msg2)
     }
 
@@ -98,7 +98,7 @@ object FieldFactory {
           numInterations = iter
         }
       } else {
-        throw new RuntimeException("Param 2 of the method sql should be an integer")
+        throw new RuntimeException("Param 2 of the method from_sql should be an integer")
       }
     }
 
