@@ -1,0 +1,5 @@
+export JU_DB_USER="root"
+export JU_DB_USER_PASS=""
+export JU_DB_DRIVER="com.mysql.jdbc.Driver"
+export JU_DB_URL="jdbc:mysql://localhost/temp"
+export JU_LOG_SQL="false"

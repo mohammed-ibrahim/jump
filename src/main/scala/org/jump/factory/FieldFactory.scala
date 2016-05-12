@@ -1,6 +1,5 @@
 package org.jump.factory
 
-import org.ini4j.Ini
 import java.io.FileReader
 import scala.collection.JavaConversions._
 
@@ -9,16 +8,22 @@ import org.jump.entity._
 import org.jump.db._
 import org.jump.common._
 
-object FieldFactory {
-  def build(sectionTag: String): List[Field] = {
-    var fields = ParameterParser.getFields(sectionTag)
+import org.jump.parser.SqlCommand
+import org.jump.parser.InsertCommand
 
+object FieldFactory {
+  def build(command: InsertCommand): List[Field] = {
+    var fields = command.getFieldConfigs
+
+    var index = 0
     fields.map { x =>
-      buildField(sectionTag, x)
+      index = index + 1
+      val commandNumber = "Field: " + index.toString
+      buildField(commandNumber, x)
     }.toList
   }
 
-  def buildField(sectionTag: String, field: FieldConfig): Field = {
+  def buildField(commandNumber: String, field: FieldConfig): Field = {
     var crawlerTypes = Set("one_of", "static", "serial", "sql", "between", "random_between")
     var supported = crawlerTypes ++ Set("fake") ++ Set("now")
 
@@ -27,7 +32,7 @@ object FieldFactory {
     }
 
     if (crawlerTypes.contains(field.getFnName)) {
-      return new CrawlerField(field, buildCrawler(sectionTag, field))
+      return new CrawlerField(field, buildCrawler(commandNumber, field))
     } else if (field.getFnName == "fake") {
       if (field.getParams.size != 1) {
         throw new RuntimeException("The function [fake] takes only 1 parameter")
@@ -41,19 +46,19 @@ object FieldFactory {
     throw new RuntimeException(s"Unknown function [${field.getFnName}]")
   }
 
-  private def buildCrawler(sectionTag: String, field: FieldConfig): Crawler = {
+  private def buildCrawler(commandNumber: String, field: FieldConfig): Crawler = {
     field.getFnName match {
-      case "random_between" => buildRandomBetweenCrawler(sectionTag, field)
+      case "random_between" => buildRandomBetweenCrawler(commandNumber, field)
 
-      case "between"        => buildBetweenCrawler(sectionTag, field)
+      case "between"        => buildBetweenCrawler(commandNumber, field)
 
-      case "one_of"         => buildOneOfCrawler(sectionTag, field)
+      case "one_of"         => buildOneOfCrawler(commandNumber, field)
 
-      case "static"         => buildStaticCrawler(sectionTag, field)
+      case "static"         => buildStaticCrawler(commandNumber, field)
 
-      case "serial"         => buildSerialCrawler(sectionTag, field)
+      case "serial"         => buildSerialCrawler(commandNumber, field)
 
-      case "sql"            => buildSqlCrawler(sectionTag, field)
+      case "sql"            => buildSqlCrawler(commandNumber, field)
 
       case _ => {
         throw new RuntimeException("Unknown function " + field.getFnName)
@@ -75,10 +80,10 @@ object FieldFactory {
     return false
   }
 
-  private def buildSqlCrawler(sectionTag: String, field: FieldConfig): Crawler = {
+  private def buildSqlCrawler(commandNumber: String, field: FieldConfig): Crawler = {
     val params = field.getParams.toList
     if (!Set(1, 2).contains(params.size)) {
-      val msg1 = s"The method [sql] can be called with either 1 or 2 parameters: section [${sectionTag}]"
+      val msg1 = s"The method [sql] can be called with either 1 or 2 parameters: Field [${commandNumber}]"
       val msg2 = "1. [sql(<sql_query>)] or 2. [sql(<sql_query>, int)]"
       throw new RuntimeException(msg1 + msg2)
     }
@@ -99,70 +104,70 @@ object FieldFactory {
 
     val avList = DBManager.getAvList(sql)
 
-    new Crawler(avList, "serial", numInterations, sectionTag)
+    new Crawler(avList, "serial", numInterations, commandNumber)
   }
 
-  private def buildStaticCrawler(sectionTag: String, field: FieldConfig): Crawler = {
+  private def buildStaticCrawler(commandNumber: String, field: FieldConfig): Crawler = {
     if (field.getParams.size != 1) {
-      throw new RuntimeException(s"The method static takes only 1 parameter: Error in section [${sectionTag}] Under the key fields")
+      throw new RuntimeException(s"The method static takes only 1 parameter: Error in Field [${commandNumber}] Under the key fields")
     }
 
-    new Crawler(field.getParams.toList, "serial", 1, sectionTag)
+    new Crawler(field.getParams.toList, "serial", 1, commandNumber)
   }
 
-  private def buildSerialCrawler(sectionTag: String, field: FieldConfig): Crawler = {
-    new Crawler(field.getParams.toList, "serial", 1, sectionTag)
+  private def buildSerialCrawler(commandNumber: String, field: FieldConfig): Crawler = {
+    new Crawler(field.getParams.toList, "serial", 1, commandNumber)
   }
 
-  private def buildOneOfCrawler(sectionTag: String, field: FieldConfig): Crawler = {
+  private def buildOneOfCrawler(commandNumber: String, field: FieldConfig): Crawler = {
     if (field.getParams.size < 1) {
-      throw new RuntimeException(s"Not enough params for the function one_of in section [${sectionTag}] Under the key fields")
+      throw new RuntimeException(s"Not enough params for the function one_of in Field [${commandNumber}] Under the key fields")
     }
 
-    new Crawler(field.getParams.toList, "random", 1, sectionTag)
+    new Crawler(field.getParams.toList, "random", 1, commandNumber)
   }
 
-  private def buildBetweenCrawler(sectionTag: String, field: FieldConfig): Crawler = {
+  private def buildBetweenCrawler(commandNumber: String, field: FieldConfig): Crawler = {
     if (field.getParams.size != 2) {
-      throw new RuntimeException(s"The function [between] takes two parameters [between(int, int)], section [${sectionTag}]")
+      throw new RuntimeException(s"The function [between] takes two parameters [between(int, int)], Field [${commandNumber}]")
     }
 
     var v1 = field.getParams.get(0)
     var v2 = field.getParams.get(1)
 
     if (!isDigit(v1) || !isDigit(v2)) {
-      throw new RuntimeException(s"The function [between] requires both parameters to be int [between(int, int)], section [${sectionTag}]")
+      throw new RuntimeException(s"The function [between] requires both parameters to be int [between(int, int)], Field [${commandNumber}]")
     }
 
     var start = Math.min(v1.toInt, v2.toInt)
     var end = Math.max(v1.toInt, v2.toInt)
 
     if (start == end) {
-      throw new RuntimeException(s"The function [between] parameter 1 should be greater than parameter 2 [between(int, int)], section [${sectionTag}]")
+      throw new RuntimeException(s"The function [between] parameter 1 should be greater than parameter 2 [between(int, int)], Field [${commandNumber}]")
     }
 
-    new Crawler((start to end).toList.map (x => x.toString).toList, "serial", 1, sectionTag)
+    new Crawler((start to end).toList.map (x => x.toString).toList, "serial", 1, commandNumber)
   }
 
-  private def buildRandomBetweenCrawler(sectionTag: String, field: FieldConfig): Crawler = {
+  private def buildRandomBetweenCrawler(commandNumber: String, field: FieldConfig): Crawler = {
     if (field.getParams.size != 2) {
-      throw new RuntimeException(s"The function [between] takes two parameters [between(int, int)], section [${sectionTag}]")
+      throw new RuntimeException(s"The function [between] takes two parameters [between(int, int)], Field [${commandNumber}]")
     }
 
     var v1 = field.getParams.get(0)
     var v2 = field.getParams.get(1)
 
     if (!isDigit(v1) || !isDigit(v2)) {
-      throw new RuntimeException(s"The function [between] requires both parameters to be int [between(int, int)], section [${sectionTag}]")
+      throw new RuntimeException(s"The function [between] requires both parameters to be int [between(int, int)], Field [${commandNumber}]")
     }
 
     var start = Math.min(v1.toInt, v2.toInt)
     var end = Math.max(v1.toInt, v2.toInt)
 
     if (start == end) {
-      throw new RuntimeException(s"The function [between] parameter 1 should be greater than parameter 2 [between(int, int)], section [${sectionTag}]")
+      throw new RuntimeException(s"The function [between] parameter 1 should be greater than parameter 2 [between(int, int)], Field [${commandNumber}]")
     }
 
-    new Crawler((start to end).toList.map (x => x.toString).toList, "random", 1, sectionTag)
+    new Crawler((start to end).toList.map (x => x.toString).toList, "random", 1, commandNumber)
   }
 }

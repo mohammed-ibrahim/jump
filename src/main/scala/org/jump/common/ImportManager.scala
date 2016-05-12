@@ -1,6 +1,5 @@
 package org.jump.common
 
-import org.ini4j.Ini
 import java.io.FileReader
 import scala.collection.JavaConversions._
 
@@ -9,12 +8,20 @@ import org.jump.manager._
 import org.jump.logging._
 import org.jump.db._
 
+import org.jump.parser.SqlCommand
+import org.jump.parser.InsertCommand
+
 object ImportManager {
   val log = LogManager.createInstance(this.getClass.getName)
 
-  def process(sectionTag: String, fields: List[Field], logSql: Boolean): Unit = {
-    val numRows = IniManager.getKey(sectionTag, "rows").toInt
+  def process(commandNum: String, command: InsertCommand, fields: List[Field]): Unit = {
+    val numRows = command.getNumRows
     val batchSize = AppConfig.conf.getInt("batch_size")
+
+    var logSql: Boolean = false
+    if (AppConfig.conf.getString("log_sql") == "true") {
+      logSql = true
+    }
 
     if (numRows < 1) {
       throw new RuntimeException("[rows] should be atleast 1")
@@ -23,7 +30,7 @@ object ImportManager {
     val totalIterations = numRows / batchSize
     val remaining = numRows % batchSize
 
-    val tableName = IniManager.getKey(sectionTag, "table")
+    val tableName = command.getTableName
     var total = 0
 
     for (i <- 0 until totalIterations) {
@@ -33,7 +40,7 @@ object ImportManager {
       }
       DBManager.execute(sql)
       total = total + batchSize
-      log.info(s"[${sectionTag}] Inserted [${total}] rows")
+      log.info(s"[${commandNum}] Inserted [${total}] rows")
     }
 
     if (remaining > 0) {
@@ -43,7 +50,7 @@ object ImportManager {
       }
       DBManager.execute(sql)
       total = total + remaining
-      log.info(s"[${sectionTag}] Inserted [${total}] rows")
+      log.info(s"[${commandNum}] Inserted [${total}] rows")
     }
   }
 
