@@ -23,6 +23,7 @@ import org.jump.parser.JumpGen
 import org.jump.parser.SqlCommand
 import org.jump.parser.InsertCommand
 import org.jump.parser.RollbackCommand
+import org.jump.parser.ParseResult
 
 object Boot {
   val log = LogManager.createInstance(this.getClass.getName)
@@ -42,14 +43,21 @@ object Boot {
       }
 
       val fileContents = getFileContents(fileName)
-      val commands = JumpGen.parse(fileContents)
-      if (commands == null) {
+      val result = JumpGen.parse(fileContents)
+      if (result.getCommands() == null) {
+        log.info("There is an error in script: " + fileName);
+        log.info(result.getErrorMessage());
+
+        if (AppConfig.conf.getString("debug") == "true") {
+          log.info(result.getStackTrace());
+        }
+
         return ;
       }
 
       DBManager.init
       var index = 1
-      commands.foreach { x =>
+      result.getCommands().foreach { x =>
         runCommand(index.toString, x)
         index = index + 1
       }
