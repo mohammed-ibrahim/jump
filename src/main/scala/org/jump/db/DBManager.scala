@@ -5,11 +5,11 @@ import java.sql._
 import scalaz._
 import Scalaz._
 
-import org.ini4j.Ini
 import java.io.FileReader
 import scala.collection.JavaConversions._
 
 import org.jump.manager._
+import org.jump.common._
 
 object DBManager {
 
@@ -34,11 +34,11 @@ object DBManager {
   }
 
   private def getConnection(): Connection = {
-    Class.forName(IniManager.getKey("db", "driver"))
+    Class.forName(AppConfig.conf.getString("db.default.driver"))
     val conn = DriverManager.getConnection(
-      IniManager.getKey("db", "url"),
-      IniManager.getKey("db", "user"),
-      IniManager.getKey("db", "password")
+      AppConfig.conf.getString("db.default.url"),
+      AppConfig.conf.getString("db.default.user"),
+      AppConfig.conf.getString("db.default.password")
     )
 
     conn.setAutoCommit(false)

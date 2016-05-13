@@ -1,6 +1,5 @@
 package org.jump.common
 
-import org.ini4j.Ini
 import java.io.FileReader
 import scala.collection.JavaConversions._
 
