@@ -66,9 +66,10 @@ object Boot {
       IniManager.ini.keySet.map { x =>
         runSection(x)
       }
-      DBManager.commitAndClose
-      log.info("Successfully completed: [COMMITED CHANGES]")
       */
+
+      DBManager.commitAndClose
+      log.info("Successfully completed and commited changes.")
     } catch {
       case e: Exception => {
         DBManager.rollbackAndClose
