@@ -1,0 +1,18 @@
+sql () {
+    "drop database if exists jump",
+    "create database jump",
+
+    "create table jump.employees (
+        name text not null,
+        dob date not null,
+        salary int not null,
+        address text
+    )"
+}
+
+insert(jump.employees, 10) {
+    name = fake(name),
+    dob = fake(date),
+    salary = random_between(1000, 5000),
+    address = fake(address)
+}
