@@ -62,21 +62,20 @@ object Boot {
         index = index + 1
       }
 
-      /*
-      IniManager.ini.keySet.map { x =>
-        runSection(x)
-      }
-      */
-
       DBManager.commitAndClose
       log.info("Successfully completed and commited changes.")
     } catch {
       case e: Exception => {
         DBManager.rollbackAndClose
-        val sw = new StringWriter
-        e.printStackTrace(new PrintWriter(sw))
-        log.severe(sw.toString)
-        log.severe("FAILED! [ROLLED BACK CHANGES]")
+
+        if (AppConfig.conf.getString("debug") == "true") {
+          val sw = new StringWriter
+          e.printStackTrace(new PrintWriter(sw))
+          log.severe(sw.toString)
+        }
+
+        log.info(e.getMessage)
+        log.info("Rollback complete.")
       }
     }
   }
@@ -101,30 +100,5 @@ object Boot {
     } else if (cmd.isInstanceOf[RollbackCommand]) {
       throw new RuntimeException("Manual rollback called!! rolling back..")
     }
-  }
-
-  def runSection(sectionTag: String): Unit = {
-    /*
-    val runType = IniManager.getKey(sectionTag, "type")
-    val startAt = (new Date).getTime
-    val logSql = if (IniManager.getKey("db", "log_sql") == "true") true else false
-
-    if (runType == "insert") {
-      var fields = FieldFactory.build(sectionTag)
-      var sqlList = ImportManager.process(sectionTag, fields, logSql)
-    }
-
-    if (runType == "sql") {
-      val sql = IniManager.getKey(sectionTag, "sql")
-      if (logSql) {
-        log.info("Executing the sql: " + sql);
-      }
-      DBManager.execute(sql)
-    }
-    val endAt = (new Date).getTime
-
-    log.info(s"[${sectionTag}] total time: ${(endAt - startAt).toString} ms")
-    System.gc
-    */
   }
 }
