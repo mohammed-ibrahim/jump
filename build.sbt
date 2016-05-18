@@ -44,7 +44,10 @@ libraryDependencies += "org.scalaz" % "scalaz-core_2.11" % "7.0.6"
 
 // Uncomment to use Akka
 //libraryDependencies += "com.typesafe.akka" %% "akka-actor" % "2.3.11"
-libraryDependencies += "com.typesafe" % "config" % "1.2.1"
+//libraryDependencies += "com.typesafe" % "config" % "1.2.1"
+
+//Cli parser
+libraryDependencies += "commons-cli" % "commons-cli" % "1.2"
 
 //libraryDependencies ++= Seq(
 //  "ch.qos.logback"  %  "logback-classic"   % "1.1.3",
