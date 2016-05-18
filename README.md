@@ -79,25 +79,9 @@ The current java version can be checked using `java -version`
 
 ### How to use it
 
-+ Download the env.sh file from the [link] (https://raw.githubusercontent.com/mohammed-ibrahim/jump/master/env.sh)
 + Download the jump.jar from the [link] (https://github.com/mohammed-ibrahim/jump/blob/master/jump-1.0.jar?raw=true)
 
-#### 1. Make the necessary changes to the variables in the file env.sh
-
-##### 1.a Database settings username, password.. all configurations needs to be made in this file
-```bash
-JU_DB_USER              # Database user name
-JU_DB_USER_PASS         # Password for database
-JU_DB_DRIVER            # Database driver
-JU_DB_URL               # Jdbc url
-```
-
-##### 1.b
-```bash
-export env.sh
-```
-
-#### 2. Create a new file ```test_jump.ju``` and copy following contents into it.
+#### 1. Create a new file ```test_jump.ju``` and copy following contents into it.
 ```sql
 sql () {
     "drop database if exists jump",
@@ -119,10 +103,10 @@ insert(jump.employees, 10) {
 }
 ```
 
-#### 3. Run the jar using the command below:
+#### 2. Run the jar using the command below:
 
 ```bash
-java -jar jump-1.0.jar test_jump.ju
+java -jar jump.jar --file test_jump.ju --database <database_name> --username <user_name> --password <user_password>
 ```
 If everything goes fine, the program will end with message. ```Successfully completed and commited changes.```
 
