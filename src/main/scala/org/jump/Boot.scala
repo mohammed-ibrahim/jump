@@ -29,26 +29,23 @@ object Boot {
   val log = LogManager.createInstance(this.getClass.getName)
   def main(args: Array[String]): Unit = {
 
+    if (CloValidator.isValid(args) == false) {
+      return
+    }
+
     try {
-      var fileName = ""
-      if (args.length != 1) {
-        println("Usage: java -jar jump-1.0.jar <input-configuration-file>")
-        return
-      }
-      fileName = args(0)
-
-      val file = new File(fileName)
+      val file = new File(AppConfig.filename)
       if (!file.exists()) {
-        throw new RuntimeException(s"The configuration file [${fileName}] doesn't exists or is not accesssible to the application.")
+        throw new RuntimeException(s"The configuration file [${AppConfig.filename}] doesn't exists or is not accesssible to the application.")
       }
 
-      val fileContents = getFileContents(fileName)
+      val fileContents = getFileContents(AppConfig.filename)
       val result = JumpGen.parse(fileContents)
       if (result.getCommands() == null) {
-        log.info("There is an error in script: " + fileName);
+        log.info("There is an error in script: " + AppConfig.filename);
         log.info(result.getErrorMessage());
 
-        if (AppConfig.conf.getString("debug") == "true") {
+        if (AppConfig.verbose == true) {
           log.info(result.getStackTrace());
         }
 
@@ -68,7 +65,7 @@ object Boot {
       case e: Exception => {
         DBManager.rollbackAndClose
 
-        if (AppConfig.conf.getString("debug") == "true") {
+        if (AppConfig.verbose == true) {
           val sw = new StringWriter
           e.printStackTrace(new PrintWriter(sw))
           log.severe(sw.toString)

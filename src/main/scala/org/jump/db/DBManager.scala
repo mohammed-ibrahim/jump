@@ -10,9 +10,11 @@ import scala.collection.JavaConversions._
 
 import org.jump.manager._
 import org.jump.common._
+import org.jump.logging._
 
 object DBManager {
 
+  val log = LogManager.createInstance(this.getClass.getName)
   private var connection: Connection = null
 
   def init() = {
@@ -20,6 +22,10 @@ object DBManager {
   }
 
   def getAvList(sql: String): List[String] = {
+    if (AppConfig.logSql) {
+      log.info(sql)
+    }
+
     val avList = new java.util.ArrayList[String]()
 
     val stmt = this.connection.createStatement
@@ -34,11 +40,11 @@ object DBManager {
   }
 
   private def getConnection(): Connection = {
-    Class.forName(AppConfig.conf.getString("db.default.driver"))
+    Class.forName(AppConfig.driver)
     val conn = DriverManager.getConnection(
-      AppConfig.conf.getString("db.default.url"),
-      AppConfig.conf.getString("db.default.user"),
-      AppConfig.conf.getString("db.default.password")
+      AppConfig.getJdbcUrl,
+      AppConfig.dbUser,
+      AppConfig.dbUserPass
     )
 
     conn.setAutoCommit(false)
@@ -46,6 +52,10 @@ object DBManager {
   }
 
   def execute(sql: String): Unit = {
+    if (AppConfig.logSql) {
+      log.info(sql)
+    }
+
     val stmt = connection.createStatement
     stmt.executeUpdate(sql)
     stmt.close

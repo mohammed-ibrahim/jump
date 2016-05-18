@@ -16,12 +16,7 @@ object ImportManager {
 
   def process(commandNum: String, command: InsertCommand, fields: List[Field]): Unit = {
     val numRows = command.getNumRows
-    val batchSize = AppConfig.conf.getInt("batch_size")
-
-    var logSql: Boolean = false
-    if (AppConfig.conf.getString("log_sql") == "true") {
-      logSql = true
-    }
+    val batchSize = AppConfig.batchSize
 
     if (numRows < 1) {
       throw new RuntimeException("[rows] should be atleast 1")
@@ -35,9 +30,6 @@ object ImportManager {
 
     for (i <- 0 until totalIterations) {
       val sql = buildBatch(fields, batchSize, tableName)
-      if (logSql) {
-        log.info("Sql: " + sql);
-      }
       DBManager.execute(sql)
       total = total + batchSize
       log.info(s"[${commandNum}] Inserted [${total}] rows")
@@ -45,9 +37,6 @@ object ImportManager {
 
     if (remaining > 0) {
       val sql = buildBatch(fields, remaining, tableName)
-      if (logSql) {
-        log.info("Sql: " + sql);
-      }
       DBManager.execute(sql)
       total = total + remaining
       log.info(s"[${commandNum}] Inserted [${total}] rows")
