@@ -40,7 +40,7 @@ insert(jump_tutorial.employees, 10) {
 
 ### Above configuration inserts the data into db which looks like.
 ```sql
- select * from jump.employees;
+ select * from jump_tutorial.employees;
 +-------------------+------------+--------+---------------------------------------------------+
 | name              | dob        | salary | address                                           |
 +-------------------+------------+--------+---------------------------------------------------+
