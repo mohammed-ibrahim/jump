@@ -59,8 +59,13 @@ object Boot {
         index = index + 1
       }
 
-      DBManager.commitAndClose
-      log.info("Successfully completed and commited changes.")
+      if (!AppConfig.dryrun) {
+        DBManager.commitAndClose
+        log.info("Successfully completed and commited changes.")
+      } else {
+        DBManager.rollbackAndClose
+        log.info("Completed dry-run, safely rolled back changes!")
+      }
     } catch {
       case e: Exception => {
         DBManager.rollbackAndClose

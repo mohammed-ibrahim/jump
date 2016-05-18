@@ -27,6 +27,7 @@ object CloValidator {
       options.addOption(new Option("l", "logsql", false, "Log the sql statements that are executed"))
       options.addOption(new Option("v", "verbose", false, "Verbose"))
       options.addOption(new Option("h", "help", false, "Help page"))
+      options.addOption(new Option("r", "dry-run", false, "Dry run, rollback the change after the completion of import"))
 
       val parser = new GnuParser
 
@@ -65,6 +66,10 @@ object CloValidator {
 
       if (commandLine.hasOption("verbose")) {
         AppConfig.verbose = true
+      }
+
+      if (commandLine.hasOption("dry-run")) {
+        AppConfig.dryrun = true
       }
 
     } catch {

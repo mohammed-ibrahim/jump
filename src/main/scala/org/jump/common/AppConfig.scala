@@ -17,6 +17,8 @@ object AppConfig {
 
   val driver = "com.mysql.jdbc.Driver"
 
+  var dryrun = false
+
   private val url = "jdbc:mysql://localhost/%s"
 
   val batchSize = 1000
