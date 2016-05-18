@@ -19,10 +19,10 @@ Generation of type of data depends on usage of functions
 
 ```sql
 sql () {
-    "drop database if exists jump",
-    "create database jump",
+    "drop database if exists jump_tutorial",
+    "create database jump_tutorial",
 
-    "create table jump.employees (
+    "create table jump_tutorial.employees (
         name text not null,
         dob date not null,
         salary int not null,
@@ -30,7 +30,7 @@ sql () {
     )"
 }
 
-insert(jump.employees, 10) {
+insert(jump_tutorial.employees, 10) {
     name = fake(name),
     dob = fake(date),
     salary = random_between(1000, 5000),
