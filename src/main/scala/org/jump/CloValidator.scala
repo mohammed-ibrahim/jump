@@ -20,14 +20,14 @@ object CloValidator {
   def isValid(args: Array[String]): Boolean = {
     try {
       val options = new Options
-      options.addOption(new Option("d", "database", true, "Name of the database where to which the changes are to be made"))
-      options.addOption(new Option("u", "username", true, "Database username"))
-      options.addOption(new Option("p", "password", true, "Password for the usename"))
-      options.addOption(new Option("f", "file", true, "Input jump script file path"))
-      options.addOption(new Option("l", "logsql", false, "Log the sql statements that are executed"))
-      options.addOption(new Option("v", "verbose", false, "Verbose"))
-      options.addOption(new Option("h", "help", false, "Help page"))
-      options.addOption(new Option("r", "dry-run", false, "Dry run, rollback the change after the completion of import"))
+      options.addOption(new Option("d", "database", true, "Name of the database where to which the changes are to be made."))
+      options.addOption(new Option("u", "username", true, "Database username."))
+      options.addOption(new Option("p", "password", true, "Password for the usename."))
+      options.addOption(new Option("f", "file", true, "Input jump script file path."))
+      options.addOption(new Option("l", "logsql", false, "Log the sql statements that are executed."))
+      options.addOption(new Option("v", "verbose", false, "Verbose."))
+      options.addOption(new Option("h", "help", false, "Help page."))
+      options.addOption(new Option("r", "dry-run", false, "Dry run, rollback the change after the completion of import, Note: Rollback only works for import changes and does not rollback schema changes."))
 
       val parser = new GnuParser
 
