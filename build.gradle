@@ -1,0 +1,45 @@
+apply plugin: 'java'
+
+apply plugin:'application'
+apply plugin:'maven'
+
+version = '1.0'
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'Simple parser for Cron-Compiler Application',
+                   'Implementation-Version': version,
+                   'Main-Class': 'org.jump.Main'
+
+    }
+}
+
+uploadArchives {
+    repositories {
+       flatDir {
+           dirs 'repos'
+       }
+    }
+}
+
+repositories {
+    mavenCentral()
+    flatDir {
+       dirs 'lib'
+    }
+}
+
+mainClassName = "org.jump.Main"
+
+dependencies {
+}
+
+task onejar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'Gradle Jar File Example',
+            'Implementation-Version': version,
+            'Main-Class': 'org.jump.Main'
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
