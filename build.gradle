@@ -6,7 +6,7 @@ apply plugin:'maven'
 version = '1.0'
 jar {
     manifest {
-        attributes 'Implementation-Title': 'Simple parser for Cron-Compiler Application',
+        attributes 'Implementation-Title': 'Database importer',
                    'Implementation-Version': version,
                    'Main-Class': 'org.jump.Main'
 
@@ -28,9 +28,13 @@ repositories {
     }
 }
 
-mainClassName = "org.jump.Main"
+mainClassName = "org.jump.boot.Main"
 
 dependencies {
+    compile 'com.github.mirreck:java-fake-factory:1.0.2'
+    compile 'mysql:mysql-connector-java:5.1.6'
+    compile 'commons-cli:commons-cli:1.2'
+    compile 'org.projectlombok:lombok:1.16.12'
 }
 
 task onejar(type: Jar) {
