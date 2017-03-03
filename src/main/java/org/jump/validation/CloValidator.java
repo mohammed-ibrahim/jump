@@ -6,6 +6,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.jump.entity.ApplicationConfiguration;
+import org.jump.util.Utility;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -58,25 +59,27 @@ public class CloValidator {
         conf.setSuccess(false);
 
         if (!cli.hasOption(FILE_NAME)) {
-            log.info("-f or --file option is required");
-            return conf;
-        }
 
-        conf.setFileName(cli.getOptionValue(FILE_NAME));
+            conf.setFileName(Utility.readFromConsole("Enter file name"));
+        } else {
+
+            conf.setFileName(cli.getOptionValue(FILE_NAME));
+        }
 
         if (!cli.hasOption(DATA_BASE)) {
-            log.info("-db or --database option is required");
-            return conf;
-        }
 
-        conf.setDatabase(cli.getOptionValue(DATA_BASE));
+            conf.setDatabase(Utility.readFromConsole("Enter database name"));
+        } else {
+
+            conf.setDatabase(cli.getOptionValue(DATA_BASE));
+        }
 
         if (!cli.hasOption(USER)) {
-            log.info("-u or --username option is required");
-            return conf;
-        }
+            conf.setUser(Utility.readFromConsole("Enter username"));
+        } else {
 
-        conf.setUser(cli.getOptionValue(USER));
+            conf.setUser(cli.getOptionValue(USER));
+        }
 
         if (cli.hasOption(PWD)) {
             String password = cli.getOptionValue(PWD);

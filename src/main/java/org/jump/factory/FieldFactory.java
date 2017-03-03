@@ -3,7 +3,8 @@ package org.jump.factory;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jump.datagen.DataRowGenerator;
+import org.jump.datagen.BetweenFieldGenerator;
+import org.jump.datagen.IField;
 import org.jump.parser.FieldConfig;
 import org.jump.parser.InsertCommand;
 
@@ -20,22 +21,22 @@ public class FieldFactory {
         NOW;
     }
 
-    public List<DataRowGenerator> build(InsertCommand insertCommand) {
-        List<DataRowGenerator> fields = new ArrayList<DataRowGenerator>();
+    public List<IField> build(InsertCommand insertCommand) {
+        List<IField> fields = new ArrayList<IField>();
 
         for (FieldConfig fieldConfig: insertCommand.getFieldConfigs()) {
             fields.add(buildField(fieldConfig));
         }
-        // TODO Auto-generated method stub
-        return null;
+
+        return fields;
     }
 
-    private DataRowGenerator buildField(FieldConfig fieldConfig) {
+    private IField buildField(FieldConfig fieldConfig) {
         String fnName = fieldConfig.getFnName();
         Method method = null;
 
         try {
-            method = Method.valueOf(fnName);
+            method = Method.valueOf(fnName.toUpperCase());
         } catch (Exception e) {
 
             throw new RuntimeException("Unknown function: " + fnName);
@@ -43,9 +44,10 @@ public class FieldFactory {
 
         switch (method) {
         case BETWEEN:
-            break;
-        }
-        return null;
-    }
+            return new BetweenFieldGenerator(fieldConfig);
 
+        default:
+            throw new RuntimeException("Unknown function name: " + method.toString());
+        }
+    }
 }

@@ -2,7 +2,7 @@ package org.jump.service;
 
 import java.util.List;
 
-import org.jump.datagen.DataRowGenerator;
+import org.jump.datagen.IField;
 import org.jump.entity.ApplicationConfiguration;
 import org.jump.factory.FieldFactory;
 import org.jump.parser.InsertCommand;
@@ -19,7 +19,7 @@ public class InsertCommandExecutor {
     }
 
     public void execute() {
-        List<DataRowGenerator> fields = new FieldFactory().build(insertCommand);
+        List<IField> fields = new FieldFactory().build(insertCommand);
 
         new ImportHandler().importRows(appConfig, insertCommand, fields);
     }
