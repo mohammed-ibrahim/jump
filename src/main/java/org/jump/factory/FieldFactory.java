@@ -43,11 +43,23 @@ public class FieldFactory {
         }
 
         switch (method) {
-        case BETWEEN:
-            return new BetweenFieldGenerator(fieldConfig);
+            case BETWEEN:
+                return new BetweenFieldGenerator(fieldConfig);
 
-        default:
-            throw new RuntimeException("Unknown function name: " + method.toString());
+            case FAKE:
+                return new IField() {
+                    @Override
+                    public String getNext() {
+                        if (fieldConfig.getParams().size() != 1) {
+                            throw new RuntimeException("Method fake takes only 1 parameter.");
+                        }
+
+                        return FakeDataFactory.getData(fieldConfig.getParams().get(0));
+                    }
+                };
+
+            default:
+                throw new RuntimeException("Unknown function name: " + method.toString());
         }
     }
 }
