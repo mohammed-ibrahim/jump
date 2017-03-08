@@ -11,6 +11,7 @@ import org.jump.datagen.RandomListPicker;
 import org.jump.datagen.RandomRangeGenerator;
 import org.jump.datagen.SerialListItemPicker;
 import org.jump.datagen.StaticField;
+import org.jump.entity.ApplicationConfiguration;
 import org.jump.parser.FieldConfig;
 import org.jump.parser.InsertCommand;
 
@@ -27,17 +28,17 @@ public class FieldFactory {
         NOW;
     }
 
-    public List<IField> build(InsertCommand insertCommand) {
+    public List<IField> build(ApplicationConfiguration appConfig, InsertCommand insertCommand) {
         List<IField> fields = new ArrayList<IField>();
 
         for (FieldConfig fieldConfig: insertCommand.getFieldConfigs()) {
-            fields.add(buildField(fieldConfig));
+            fields.add(buildField(appConfig, fieldConfig));
         }
 
         return fields;
     }
 
-    private IField buildField(FieldConfig fieldConfig) {
+    private IField buildField(ApplicationConfiguration appConfig, FieldConfig fieldConfig) {
         String fnName = fieldConfig.getFnName();
         Method method = null;
 

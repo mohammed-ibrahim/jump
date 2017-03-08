@@ -2,6 +2,8 @@ package org.jump.util;
 
 import java.util.Scanner;
 
+import org.jump.entity.ApplicationConfiguration;
+
 public class Utility {
 
     public static boolean isNumeric(String string) {
@@ -13,5 +15,15 @@ public class Utility {
         Scanner in = new Scanner(System.in);
 
         return in.next();
+    }
+
+    public static String buildUrl(ApplicationConfiguration appConfig) {
+
+        String port = appConfig.getPort() == null ? "3306" : String.valueOf(appConfig.getPort());
+        String host = appConfig.getHost() == null ? "localhost" : appConfig.getHost();
+
+        String url = String.format("jdbc:mysql://%s:%s/%s", host, port, appConfig.getDatabase());
+
+        return url;
     }
 }

@@ -19,7 +19,7 @@ public class InsertCommandExecutor {
     }
 
     public void execute() {
-        List<IField> fields = new FieldFactory().build(insertCommand);
+        List<IField> fields = new FieldFactory().build(this.appConfig, insertCommand);
 
         new ImportHandler().importRows(appConfig, insertCommand, fields);
     }

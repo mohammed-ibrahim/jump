@@ -15,6 +15,14 @@ public class ApplicationConfiguration {
 
     @Getter
     @Setter
+    private String host;
+
+    @Getter
+    @Setter
+    private Integer port;
+
+    @Getter
+    @Setter
     private String user;
 
     @Getter
