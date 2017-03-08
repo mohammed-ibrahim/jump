@@ -4,7 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jump.datagen.BetweenFieldGenerator;
+import org.jump.datagen.FakeFieldWrapper;
 import org.jump.datagen.IField;
+import org.jump.datagen.NowField;
+import org.jump.datagen.RandomListPicker;
+import org.jump.datagen.RandomRangeGenerator;
+import org.jump.datagen.SerialListItemPicker;
+import org.jump.datagen.StaticField;
 import org.jump.parser.FieldConfig;
 import org.jump.parser.InsertCommand;
 
@@ -43,20 +49,26 @@ public class FieldFactory {
         }
 
         switch (method) {
+            case ONE_OF:
+                return new RandomListPicker(fieldConfig);
+
+            case STATIC:
+                return new StaticField(fieldConfig);
+
+            case SERIAL:
+                return new SerialListItemPicker(fieldConfig);
+
             case BETWEEN:
                 return new BetweenFieldGenerator(fieldConfig);
 
-            case FAKE:
-                return new IField() {
-                    @Override
-                    public String getNext() {
-                        if (fieldConfig.getParams().size() != 1) {
-                            throw new RuntimeException("Method fake takes only 1 parameter.");
-                        }
+            case RANDOM_BETWEEN:
+                return new RandomRangeGenerator(fieldConfig);
 
-                        return FakeDataFactory.getData(fieldConfig.getParams().get(0));
-                    }
-                };
+            case FAKE:
+                return new FakeFieldWrapper(fieldConfig);
+
+            case NOW:
+                return new NowField();
 
             default:
                 throw new RuntimeException("Unknown function name: " + method.toString());
