@@ -2,6 +2,7 @@ package org.jump.datagen;
 
 import org.jump.factory.FakeDataFactory;
 import org.jump.parser.FieldConfig;
+import org.jump.util.Utility;
 
 public class FakeFieldWrapper implements IField {
 
@@ -18,7 +19,7 @@ public class FakeFieldWrapper implements IField {
 
     @Override
     public String getNext() {
-        return FakeDataFactory.getData(fieldConfig.getParams().get(0));
+        return Utility.wrapAndEscape(FakeDataFactory.getData(fieldConfig.getParams().get(0)));
     }
 
 }

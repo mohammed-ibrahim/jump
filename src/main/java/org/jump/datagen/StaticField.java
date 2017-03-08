@@ -1,6 +1,7 @@
 package org.jump.datagen;
 
 import org.jump.parser.FieldConfig;
+import org.jump.util.Utility;
 
 public class StaticField implements IField {
 
@@ -16,7 +17,7 @@ public class StaticField implements IField {
 
     @Override
     public String getNext() {
-        return this.data;
+        return Utility.wrapAndEscape(this.data);
     }
 
 }

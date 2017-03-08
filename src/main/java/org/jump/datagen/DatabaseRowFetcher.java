@@ -54,13 +54,13 @@ public class DatabaseRowFetcher implements IField {
                 this.lastItem = fetchNext();
             }
 
-            return this.lastItem;
+            return Utility.wrapAndEscape(this.lastItem);
         } else {
 
             this.factorCount = 0;
             this.lastItem = fetchNext();
 
-            return this.lastItem;
+            return Utility.wrapAndEscape(this.lastItem);
         }
     }
 

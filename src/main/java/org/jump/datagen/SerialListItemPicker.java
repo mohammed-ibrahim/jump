@@ -3,6 +3,7 @@ package org.jump.datagen;
 import java.util.List;
 
 import org.jump.parser.FieldConfig;
+import org.jump.util.Utility;
 
 public class SerialListItemPicker implements IField {
 
@@ -27,7 +28,7 @@ public class SerialListItemPicker implements IField {
         String value = this.items.get(index);
         index ++;
 
-        return value;
+        return Utility.wrapAndEscape(value);
     }
 
 }

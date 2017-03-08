@@ -45,6 +45,6 @@ public class BetweenFieldGenerator implements IField {
             this.current = this.start;
         }
 
-        return str;
+        return Utility.wrapAndEscape(str);
     }
 }

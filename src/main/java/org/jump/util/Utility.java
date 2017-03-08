@@ -26,4 +26,20 @@ public class Utility {
 
         return url;
     }
+
+    public static String wrapAndEscape(String item) {
+        return wrap(escape(item));
+    }
+
+    public static String wrap(String item) {
+        if (item == null) {
+            return "NULL";
+        }
+
+        return "'" + item + "'";
+    }
+
+    public static String escape(String item) {
+        return item.replace("'", "\\'");
+    }
 }

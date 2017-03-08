@@ -39,7 +39,7 @@ public class RandomRangeGenerator implements IField {
     @Override
     public String getNext() {
         Integer result = randomizer.nextInt(this.max-this.min) + this.min;
-        return String.valueOf(result.intValue());
+        return Utility.wrapAndEscape(String.valueOf(result.intValue()));
     }
 
 }

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.jump.parser.FieldConfig;
+import org.jump.util.Utility;
 
 public class RandomListPicker implements IField {
 
@@ -21,7 +22,7 @@ public class RandomListPicker implements IField {
 
     @Override
     public String getNext() {
-        return items.get(randomizer.nextInt(items.size()));
+        return Utility.wrapAndEscape(items.get(randomizer.nextInt(items.size())));
     }
 
 }
