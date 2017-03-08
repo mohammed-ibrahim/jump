@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jump.datagen.BetweenFieldGenerator;
+import org.jump.datagen.DatabaseRowFetcher;
 import org.jump.datagen.FakeFieldWrapper;
 import org.jump.datagen.IField;
 import org.jump.datagen.NowField;
@@ -58,6 +59,9 @@ public class FieldFactory {
 
             case SERIAL:
                 return new SerialListItemPicker(fieldConfig);
+
+            case FROM_SQL:
+                return new DatabaseRowFetcher(appConfig, fieldConfig);
 
             case BETWEEN:
                 return new BetweenFieldGenerator(fieldConfig);
