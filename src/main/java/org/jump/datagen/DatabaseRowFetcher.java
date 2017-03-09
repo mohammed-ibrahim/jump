@@ -12,6 +12,9 @@ import org.jump.entity.ApplicationConfiguration;
 import org.jump.parser.FieldConfig;
 import org.jump.util.Utility;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class DatabaseRowFetcher implements IField {
 
     private List<String> items = null;
@@ -38,6 +41,7 @@ public class DatabaseRowFetcher implements IField {
         try {
             this.items = this.getItemsFromDb(appConfig, fieldConfig);
         } catch (Exception e) {
+            log.error("Error with sql: " + fieldConfig.getParams().get(0));
             throw new RuntimeException(e);
         }
 
@@ -83,7 +87,7 @@ public class DatabaseRowFetcher implements IField {
 
         List<String> items = new ArrayList<String>();
         while (resultSet.next()) {
-            items.add(resultSet.getString(0));
+            items.add(resultSet.getString(1));
         }
 
         resultSet.close();
