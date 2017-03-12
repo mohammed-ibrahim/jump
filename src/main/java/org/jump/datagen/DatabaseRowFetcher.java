@@ -1,15 +1,11 @@
 package org.jump.datagen;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.jump.entity.ApplicationConfiguration;
 import org.jump.parser.FieldConfig;
+import org.jump.service.TransactionalSqlExecutor;
 import org.jump.util.Utility;
 
 import lombok.extern.slf4j.Slf4j;
@@ -27,8 +23,10 @@ public class DatabaseRowFetcher implements IField {
 
     private String lastItem;
 
-    public DatabaseRowFetcher(ApplicationConfiguration appConfig, FieldConfig fieldConfig) {
+    private TransactionalSqlExecutor sqlExecutor;
 
+    public DatabaseRowFetcher(ApplicationConfiguration appConfig, FieldConfig fieldConfig, TransactionalSqlExecutor sqlExecutor) {
+        this.sqlExecutor = sqlExecutor;
 
         if (fieldConfig.getParams().size() < 1 || fieldConfig.getParams().size() > 2) {
             throw new RuntimeException("from_sql usage: from_sql('sql') or from_sql('sql', 'factor')");
@@ -77,22 +75,9 @@ public class DatabaseRowFetcher implements IField {
     }
 
     private List<String> getItemsFromDb(ApplicationConfiguration appConfig, FieldConfig fieldConfig) throws Exception {
-
-        String url = Utility.buildUrl(appConfig);
-        Connection connection = DriverManager.getConnection(url, appConfig.getUser(), appConfig.getPassword());
         String sql = fieldConfig.getParams().get(0);
 
-        Statement stmt = connection.createStatement();
-        ResultSet resultSet = stmt.executeQuery(sql);
-
-        List<String> items = new ArrayList<String>();
-        while (resultSet.next()) {
-            items.add(resultSet.getString(1));
-        }
-
-        resultSet.close();
-        stmt.close();
-        connection.close();
+        List<String> items = this.sqlExecutor.getItemsFromSql(sql);
 
         if (items.size() == 0) {
             String message = String.format("The Sql: %s did not return any rows", sql);

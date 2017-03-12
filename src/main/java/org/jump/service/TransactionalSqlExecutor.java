@@ -2,7 +2,11 @@ package org.jump.service;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.jump.entity.ApplicationConfiguration;
 import org.jump.util.Utility;
@@ -38,6 +42,19 @@ public class TransactionalSqlExecutor {
 
             throw e;
         }
+    }
+
+    public List<String> getItemsFromSql(String sql) throws Exception {
+        Statement stmt = connection.createStatement();
+        ResultSet resultSet = stmt.executeQuery(sql);
+
+        List<String> items = new ArrayList<String>();
+        while (resultSet.next()) {
+            items.add(resultSet.getString(1));
+        }
+
+        stmt.close();
+        return items;
     }
 
     public void commitAndClose() throws Exception {

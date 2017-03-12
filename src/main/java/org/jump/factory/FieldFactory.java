@@ -15,6 +15,7 @@ import org.jump.datagen.StaticField;
 import org.jump.entity.ApplicationConfiguration;
 import org.jump.parser.FieldConfig;
 import org.jump.parser.InsertCommand;
+import org.jump.service.TransactionalSqlExecutor;
 
 public class FieldFactory {
 
@@ -29,17 +30,17 @@ public class FieldFactory {
         NOW;
     }
 
-    public List<IField> build(ApplicationConfiguration appConfig, InsertCommand insertCommand) {
+    public List<IField> build(ApplicationConfiguration appConfig, InsertCommand insertCommand, TransactionalSqlExecutor sqlExecutor) {
         List<IField> fields = new ArrayList<IField>();
 
         for (FieldConfig fieldConfig: insertCommand.getFieldConfigs()) {
-            fields.add(buildField(appConfig, fieldConfig));
+            fields.add(buildField(appConfig, fieldConfig, sqlExecutor));
         }
 
         return fields;
     }
 
-    private IField buildField(ApplicationConfiguration appConfig, FieldConfig fieldConfig) {
+    private IField buildField(ApplicationConfiguration appConfig, FieldConfig fieldConfig, TransactionalSqlExecutor sqlExecutor) {
         String fnName = fieldConfig.getFnName();
         Method method = null;
 
@@ -61,7 +62,7 @@ public class FieldFactory {
                 return new SerialListItemPicker(fieldConfig);
 
             case FROM_SQL:
-                return new DatabaseRowFetcher(appConfig, fieldConfig);
+                return new DatabaseRowFetcher(appConfig, fieldConfig, sqlExecutor);
 
             case BETWEEN:
                 return new BetweenFieldGenerator(fieldConfig);
