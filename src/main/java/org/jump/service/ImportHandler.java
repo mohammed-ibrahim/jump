@@ -9,9 +9,7 @@ import org.jump.entity.ApplicationConfiguration;
 import org.jump.parser.FieldConfig;
 import org.jump.parser.InsertCommand;
 
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class ImportHandler {
 
     private static int MAX_ROWS_PER_ITERATION = 1000;
@@ -22,11 +20,19 @@ public class ImportHandler {
 
     private static String SEPERATOR = ",";
 
+    private static String ROW_SEPERATOR = ",\n";
+
     private List<IField> fields;
 
     private InsertCommand insertCommand;
 
-    public void importRows(ApplicationConfiguration appConfig, InsertCommand insertCommand, List<IField> fields) {
+    private TransactionalSqlExecutor sqlExecutor;
+
+    public ImportHandler(TransactionalSqlExecutor sqlExecutor, ApplicationConfiguration appConfig) {
+        this.sqlExecutor = sqlExecutor;
+    }
+
+    public void importRows(ApplicationConfiguration appConfig, InsertCommand insertCommand, List<IField> fields) throws Exception {
         this.fields = fields;
         this.insertCommand = insertCommand;
 
@@ -39,16 +45,22 @@ public class ImportHandler {
             sb.append(OPEN_PAREN);
             sb.append(getRow());
             sb.append(CLOSE_PAREN);
-            prefix = SEPERATOR;
+            prefix = ROW_SEPERATOR;
 
-            if (i % MAX_ROWS_PER_ITERATION == 0) {
+            if ((i > 0) && (i % MAX_ROWS_PER_ITERATION == 0)) {
 
-                log.info(getInsertPrefix() + sb.toString());
+                String sql = getInsertPrefix() + sb.toString();
+                this.sqlExecutor.executeUpdate(sql);
+                sb.setLength(0);
+                prefix = "";
             }
         }
 
         if (sb.length() > 0) {
-            log.info(getInsertPrefix() + sb.toString());
+            String sql = getInsertPrefix() + sb.toString();
+            this.sqlExecutor.executeUpdate(sql);
+            sb.setLength(0);
+            prefix = "";
         }
     }
 
@@ -59,7 +71,7 @@ public class ImportHandler {
             columnNames.add(fieldConfig.getFieldName());
         }
 
-        return String.format("INSERT INTO %s (%s)", this.insertCommand.getTableName(), StringUtils.join(columnNames, ","));
+        return String.format("INSERT INTO %s (%s) VALUES ", this.insertCommand.getTableName(), StringUtils.join(columnNames, ","));
     }
 
     private String getRow() {
@@ -74,6 +86,4 @@ public class ImportHandler {
 
         return sb.toString();
     }
-
-
 }

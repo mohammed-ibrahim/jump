@@ -1,6 +1,7 @@
 package org.jump.factory;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -63,10 +64,19 @@ public class FakeDataFactory {
     public static String getData(String name) {
         FakeFieldType fakeFieldType = null;
         try {
-            fakeFieldType = FakeFieldType.valueOf(name);
+
+            fakeFieldType = FakeFieldType.valueOf(name.toUpperCase());
         } catch (Exception e) {
 
-            throw new RuntimeException("Unknown fake method: " + name);
+            List<String> types = new ArrayList<String>();
+            for (FakeFieldType type: FakeFieldType.values()) {
+                types.add(type.toString());
+            }
+
+            @SuppressWarnings("unchecked")
+            String message = String.format("Unknown fake method: [%s], Only supported values are: %s", name.toUpperCase(), StringUtils.join(types));
+
+            throw new RuntimeException(message);
         }
 
         switch (fakeFieldType) {
@@ -127,6 +137,9 @@ public class FakeDataFactory {
             case ADDRESS:
                 return StringUtils.join(factory.fullAddress(), " ");
 
+            case STREET_ADDRESS:
+                return factory.streetAddress();
+
             case LATITUDE:
                 return String.valueOf(factory.coordinatesLatLng()[0]);
 
@@ -159,13 +172,15 @@ public class FakeDataFactory {
 
             case URL:
             case WEBSITE:
-                return "www" + factory.letters(random(10,15)).toLowerCase() + ".com";
+                return "www." + factory.letters(random(10,15)).toLowerCase() + ".com";
 
             case TEN_DIG_PHONE_NUM:
                 return String.valueOf(8943767676L + random(1, 1000000));
 
             default:
-                throw new RuntimeException("Unknown fake method: " + fakeFieldType.toString());
+                String message = String.format("Fake method: [%s] is not implemented yet. Please contact support.");
+
+                throw new RuntimeException(message);
         }
 
     }

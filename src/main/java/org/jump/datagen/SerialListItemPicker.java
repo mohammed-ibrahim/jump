@@ -9,7 +9,7 @@ public class SerialListItemPicker implements IField {
 
     private List<String> items = null;
 
-    private int index = 0;
+    private int index;
 
     public SerialListItemPicker(FieldConfig fieldConfig) {
         if (fieldConfig.getParams().size() < 1) {
@@ -17,6 +17,7 @@ public class SerialListItemPicker implements IField {
         }
 
         this.items = fieldConfig.getParams();
+        this.index = 0;
     }
 
     @Override
@@ -25,8 +26,7 @@ public class SerialListItemPicker implements IField {
             index = 0;
         }
 
-        String value = this.items.get(index);
-        index ++;
+        String value = this.items.get(this.index++);
 
         return Utility.wrapAndEscape(value);
     }

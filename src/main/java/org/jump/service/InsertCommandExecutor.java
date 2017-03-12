@@ -13,15 +13,18 @@ public class InsertCommandExecutor {
 
     private ApplicationConfiguration appConfig;
 
-    public InsertCommandExecutor(ApplicationConfiguration appConfig, InsertCommand insertCommand) {
+    private TransactionalSqlExecutor sqlExecutor;
+
+    public InsertCommandExecutor(ApplicationConfiguration appConfig, InsertCommand insertCommand, TransactionalSqlExecutor sqlExecutor) {
         this.insertCommand = insertCommand;
         this.appConfig = appConfig;
+        this.sqlExecutor = sqlExecutor;
     }
 
-    public void execute() {
+    public void execute() throws Exception {
         List<IField> fields = new FieldFactory().build(this.appConfig, insertCommand);
 
-        new ImportHandler().importRows(appConfig, insertCommand, fields);
+        new ImportHandler(sqlExecutor, appConfig).importRows(appConfig, insertCommand, fields);
     }
 
 }

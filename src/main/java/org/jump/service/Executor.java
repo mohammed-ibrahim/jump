@@ -7,29 +7,43 @@ import org.jump.parser.InsertCommand;
 import org.jump.parser.RollbackCommand;
 import org.jump.parser.SqlCommand;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 public class Executor {
 
-    public void execute(ApplicationConfiguration appConfig, List<Object> commands) {
+    public void execute(ApplicationConfiguration appConfig, List<Object> commands) throws Exception {
 
+        TransactionalSqlExecutor sqlExecutor = new TransactionalSqlExecutor(appConfig);
+        boolean keepRunning = true;
         for (Object command: commands) {
-            runCommand(appConfig, command);
+            keepRunning = runCommand(appConfig, command, sqlExecutor);
+
+            if (!keepRunning) {
+
+                return;
+            }
         }
+
+        sqlExecutor.commitAndClose();
     }
 
-    private void runCommand(ApplicationConfiguration appConfig, Object command) {
+    private boolean runCommand(ApplicationConfiguration appConfig, Object command, TransactionalSqlExecutor sqlExecutor) throws Exception {
         if (command instanceof SqlCommand) {
 
-            //run sql commands
+            SqlCommand sqlCommand = (SqlCommand)command;
+            for (String sql: sqlCommand.getSqls()) {
+                sqlExecutor.executeUpdate(sql);
+            }
+
         } else if (command instanceof InsertCommand) {
 
-            new InsertCommandExecutor(appConfig, (InsertCommand)command).execute();
+            new InsertCommandExecutor(appConfig, (InsertCommand)command, sqlExecutor).execute();
         } else if (command instanceof RollbackCommand) {
 
+            sqlExecutor.rollbackAndClose();
+            return false;
         } else {
             throw new RuntimeException(command.getClass() + " command is not known");
         }
+
+        return true;
     }
 }

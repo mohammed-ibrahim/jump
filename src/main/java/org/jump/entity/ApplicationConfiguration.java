@@ -31,6 +31,10 @@ public class ApplicationConfiguration {
 
     @Getter
     @Setter
+    private String driver = "com.mysql.jdbc.Driver";
+
+    @Getter
+    @Setter
     private boolean logSql = false;
 
     @Getter
