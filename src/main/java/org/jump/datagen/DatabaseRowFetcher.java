@@ -39,7 +39,7 @@ public class DatabaseRowFetcher implements IField {
         try {
             this.items = this.getItemsFromDb(appConfig, fieldConfig);
         } catch (Exception e) {
-            log.error("Error with sql: " + fieldConfig.getParams().get(0));
+            System.out.println("Error with sql: " + fieldConfig.getParams().get(0));
             throw new RuntimeException(e);
         }
 

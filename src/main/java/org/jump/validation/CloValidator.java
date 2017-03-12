@@ -5,19 +5,17 @@ import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+import org.apache.commons.cli.UnrecognizedOptionException;
 import org.jump.entity.ApplicationConfiguration;
 import org.jump.util.Utility;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 public class CloValidator {
 
     private static String FILE_NAME = "file";
 
     private static String DATA_BASE = "database";
 
-    private static String USER = "user";
+    private static String USER = "username";
 
     private static String PWD = "password";
 
@@ -48,14 +46,23 @@ public class CloValidator {
                 "Dry run, rollback the change after the completion of import, Note: Rollback only works for import changes and does not rollback schema changes."));
 
         GnuParser parser = new GnuParser();
+        ApplicationConfiguration conf = new ApplicationConfiguration();
+        CommandLine cli = null;
 
-        CommandLine cli = parser.parse(options, args);
+        try {
+            cli = parser.parse(options, args);
+        } catch (UnrecognizedOptionException uoe) {
+            conf.setSuccess(false);
+            System.out.println("Invalid option");
+            displayHelp(options);
+
+            return conf;
+        }
 
         if (cli.hasOption(HELP)) {
             displayHelp(options);
         }
 
-        ApplicationConfiguration conf = new ApplicationConfiguration();
         conf.setSuccess(false);
 
         if (!cli.hasOption(FILE_NAME)) {
@@ -96,6 +103,8 @@ public class CloValidator {
 
         if (cli.hasOption(DRY_RUN)) {
             conf.setDryRun(true);
+        } else {
+            conf.setDryRun(false);
         }
 
         conf.setSuccess(true);

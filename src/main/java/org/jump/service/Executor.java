@@ -22,7 +22,11 @@ public class Executor {
             }
         }
 
-        sqlExecutor.commitAndClose();
+        if (!appConfig.isDryRun()) {
+            sqlExecutor.commitAndClose();
+        } else {
+            sqlExecutor.rollbackAndClose();
+        }
     }
 
     private boolean runCommand(ApplicationConfiguration appConfig, Object command, TransactionalSqlExecutor sqlExecutor) throws Exception {

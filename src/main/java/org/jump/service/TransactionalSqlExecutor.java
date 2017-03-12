@@ -30,7 +30,7 @@ public class TransactionalSqlExecutor {
 
     public void executeUpdate(String sql) throws Exception {
         if (this.appConfig.isLogSql()) {
-            log.info("EXECUTING: " + sql);
+            System.out.println("EXECUTING: " + sql);
         }
 
         try {
@@ -38,7 +38,7 @@ public class TransactionalSqlExecutor {
             stmt.executeUpdate(sql);
             stmt.close();
         } catch (Exception e) {
-            log.error("ERROR WITH SQL: " + sql);
+            System.out.println("ERROR WITH SQL: " + sql);
 
             throw e;
         }
