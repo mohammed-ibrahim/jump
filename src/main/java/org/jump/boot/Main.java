@@ -1,6 +1,7 @@
 package org.jump.boot;
 
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 
 import org.jump.entity.ApplicationConfiguration;
@@ -13,13 +14,10 @@ public class Main {
 
     public static void main(String[] args) {
 
-        boolean verbose = false;
+        CloValidator validator = new CloValidator();
+        ApplicationConfiguration conf = validator.validate(args);
 
         try {
-
-            CloValidator validator = new CloValidator();
-            ApplicationConfiguration conf = validator.validate(args);
-            verbose = conf.isLogSql() || conf.isVerbose();
 
             if (!conf.isSuccess()) {
 
@@ -36,11 +34,19 @@ public class Main {
             }
 
             new Executor().execute(conf, result.getCommands());
+        } catch (NoSuchFileException nsfe) {
+            System.out.println("File not accessible: " + conf.getFileName());
+
+            if (conf.isVerbose()) {
+                nsfe.printStackTrace();
+            } else {
+                System.out.println("User verbose command line option for more details, use --help");
+            }
         } catch (Exception e) {
 
             System.out.println(e.getMessage());
 
-            if (verbose) {
+            if (conf.isVerbose()) {
                 e.printStackTrace();
             } else {
                 System.out.println("User verbose command line option for more details, use --help");

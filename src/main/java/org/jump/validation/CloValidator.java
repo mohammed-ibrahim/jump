@@ -5,6 +5,7 @@ import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.UnrecognizedOptionException;
 import org.jump.entity.ApplicationConfiguration;
 import org.jump.util.Utility;
@@ -27,11 +28,11 @@ public class CloValidator {
 
     private static String VERBOSE = "verbose";
 
-    public ApplicationConfiguration validate(String[] args) throws Exception {
+    public ApplicationConfiguration validate(String[] args) {
         return unsafeValidate(args);
     }
 
-    private ApplicationConfiguration unsafeValidate(String[] args) throws Exception {
+    private ApplicationConfiguration unsafeValidate(String[] args) {
         Options options = new Options();
 
         options.addOption(
@@ -52,6 +53,12 @@ public class CloValidator {
         try {
             cli = parser.parse(options, args);
         } catch (UnrecognizedOptionException uoe) {
+            conf.setSuccess(false);
+            System.out.println("Invalid option");
+            displayHelp(options);
+
+            return conf;
+        } catch (ParseException pe) {
             conf.setSuccess(false);
             System.out.println("Invalid option");
             displayHelp(options);
