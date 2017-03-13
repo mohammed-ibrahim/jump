@@ -28,6 +28,8 @@ public class CloValidator {
 
     private static String VERBOSE = "verbose";
 
+    private static String HOST = "host";
+
     public ApplicationConfiguration validate(String[] args) {
         return unsafeValidate(args);
     }
@@ -45,6 +47,7 @@ public class CloValidator {
         options.addOption(new Option("h", HELP, false, "Help page."));
         options.addOption(new Option("r", DRY_RUN, false,
                 "Dry run, rollback the change after the completion of import, Note: Rollback only works for import changes and does not rollback schema changes."));
+        options.addOption(new Option("t", HOST, true, "Sql server host."));
 
         GnuParser parser = new GnuParser();
         ApplicationConfiguration conf = new ApplicationConfiguration();
@@ -112,6 +115,10 @@ public class CloValidator {
             conf.setDryRun(true);
         } else {
             conf.setDryRun(false);
+        }
+
+        if (cli.hasOption(HOST)) {
+            conf.setHost(cli.getOptionValue(HOST));
         }
 
         conf.setSuccess(true);

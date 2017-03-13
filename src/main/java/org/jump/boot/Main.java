@@ -42,7 +42,7 @@ public class Main {
         } catch (SQLException see) {
 
             String message = String.format(
-                "Error with connection database/executing query: message: [%s] error-code: [%d] sql-state: [%s]",
+                "Error with connection database/executing query: message: [%s] error-code: [%d] sql-state: [%s], Check whether sql-server host is reachable/correct, or error with sql.",
                 see.getMessage(),
                 see.getErrorCode(),
                 see.getSQLState());
