@@ -1,0 +1,50 @@
+apply plugin: 'java'
+
+apply plugin:'application'
+apply plugin:'maven'
+
+version = '1.0'
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'Database importer',
+                   'Implementation-Version': version,
+                   'Main-Class': 'org.jump.Main'
+
+    }
+}
+
+uploadArchives {
+    repositories {
+       flatDir {
+           dirs 'repos'
+       }
+    }
+}
+
+repositories {
+    mavenCentral()
+    flatDir {
+       dirs 'lib'
+    }
+}
+
+mainClassName = "org.jump.boot.Main"
+
+dependencies {
+    compile 'com.github.mirreck:java-fake-factory:1.0.2'
+    compile 'mysql:mysql-connector-java:5.1.6'
+    compile 'commons-cli:commons-cli:1.2'
+    compile 'org.projectlombok:lombok:1.16.12'
+    compile name: 'parser-jump-all-1.0'
+}
+
+task onejar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'Gradle Jar File Example',
+            'Implementation-Version': version,
+            'Main-Class': 'org.jump.boot.Main'
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
