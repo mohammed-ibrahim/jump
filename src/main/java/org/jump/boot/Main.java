@@ -3,6 +3,7 @@ package org.jump.boot;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
+import java.sql.SQLException;
 
 import org.jump.entity.ApplicationConfiguration;
 import org.jump.parser.JumpGen;
@@ -35,22 +36,31 @@ public class Main {
 
             new Executor().execute(conf, result.getCommands());
         } catch (NoSuchFileException nsfe) {
-            System.out.println("File not accessible: " + conf.getFileName());
 
-            if (conf.isVerbose()) {
-                nsfe.printStackTrace();
-            } else {
-                System.out.println("User verbose command line option for more details, use --help");
-            }
+            System.out.println("File not accessible: " + conf.getFileName());
+            printException(nsfe, conf);
+        } catch (SQLException see) {
+
+            String message = String.format(
+                "Error with connection database/executing query: message: [%s] error-code: [%d] sql-state: [%s]",
+                see.getMessage(),
+                see.getErrorCode(),
+                see.getSQLState());
+            System.out.println(message);
+            printException(see, conf);
         } catch (Exception e) {
 
             System.out.println(e.getMessage());
+            printException(e, conf);
 
-            if (conf.isVerbose()) {
-                e.printStackTrace();
-            } else {
-                System.out.println("User verbose command line option for more details, use --help");
-            }
+        }
+    }
+
+    public static void printException(Exception e, ApplicationConfiguration conf) {
+        if (conf.isVerbose()) {
+            e.printStackTrace();
+        } else {
+            System.out.println("Use verbose command line option for more details, use --verbose");
         }
     }
 

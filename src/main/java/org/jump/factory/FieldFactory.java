@@ -3,6 +3,7 @@ package org.jump.factory;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jump.datagen.BetweenFieldGenerator;
 import org.jump.datagen.DatabaseRowFetcher;
 import org.jump.datagen.FakeFieldWrapper;
@@ -48,7 +49,15 @@ public class FieldFactory {
             method = Method.valueOf(fnName.toUpperCase());
         } catch (Exception e) {
 
-            throw new RuntimeException("Unknown function: " + fnName);
+            List<String> methodNames = new ArrayList<String>();
+            for (Method methodType: Method.values()) {
+                methodNames.add(methodType.toString());
+            }
+
+            @SuppressWarnings("unchecked")
+            String message = String.format("Unknown method: [%s], Only supported values are: %s", fnName.toUpperCase(), StringUtils.join(methodNames));
+
+            throw new RuntimeException(message);
         }
 
         switch (method) {
@@ -77,7 +86,7 @@ public class FieldFactory {
                 return new NowField();
 
             default:
-                throw new RuntimeException("Unknown function name: " + method.toString());
+                throw new RuntimeException(String.format("Function [%s] not implemented yet, please contact support.", method.toString().toUpperCase()));
         }
     }
 }
