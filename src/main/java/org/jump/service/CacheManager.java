@@ -30,11 +30,11 @@ public class CacheManager {
         return items.get(key).iterator();
     }
 
-    public Set<String> allkeys() {
+    public static Set<String> allkeys() {
         return items.keySet();
     }
 
-    public String itemsForKey(String key) {
+    public static String itemsForKey(String key) {
         return StringUtils.join(items.get(key), ",");
     }
 }

@@ -3,33 +3,35 @@ package org.jump.service;
 import java.util.List;
 
 import org.jump.entity.ApplicationConfiguration;
+import org.jump.entity.ExecutionStatus;
 import org.jump.parser.InsertCommand;
 import org.jump.parser.RollbackCommand;
 import org.jump.parser.SqlCommand;
 
 public class Executor {
 
-    public void execute(ApplicationConfiguration appConfig, List<Object> commands) throws Exception {
+    public ExecutionStatus execute(ApplicationConfiguration appConfig, List<Object> commands) throws Exception {
 
         TransactionalSqlExecutor sqlExecutor = new TransactionalSqlExecutor(appConfig);
-        boolean keepRunning = true;
         for (Object command: commands) {
-            keepRunning = runCommand(appConfig, command, sqlExecutor);
+            ExecutionStatus executionStatus = runCommand(appConfig, command, sqlExecutor);
 
-            if (!keepRunning) {
+            if (executionStatus.equals(ExecutionStatus.MANUAL_ROLLBACK)) {
 
-                return;
+                return executionStatus;
             }
         }
 
         if (!appConfig.isDryRun()) {
             sqlExecutor.commitAndClose();
+            return ExecutionStatus.SUCCESSFUL;
         } else {
             sqlExecutor.rollbackAndClose();
+            return ExecutionStatus.SUCCESSFUL_DRY_RUN;
         }
     }
 
-    private boolean runCommand(ApplicationConfiguration appConfig, Object command, TransactionalSqlExecutor sqlExecutor) throws Exception {
+    private ExecutionStatus runCommand(ApplicationConfiguration appConfig, Object command, TransactionalSqlExecutor sqlExecutor) throws Exception {
         if (command instanceof SqlCommand) {
 
             SqlCommand sqlCommand = (SqlCommand)command;
@@ -43,11 +45,11 @@ public class Executor {
         } else if (command instanceof RollbackCommand) {
 
             sqlExecutor.rollbackAndClose();
-            return false;
+            return ExecutionStatus.MANUAL_ROLLBACK;
         } else {
             throw new RuntimeException(command.getClass() + " command is not known");
         }
 
-        return true;
+        return ExecutionStatus.SUCCESSFUL;
     }
 }

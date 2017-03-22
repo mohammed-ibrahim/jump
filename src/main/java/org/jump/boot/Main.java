@@ -6,9 +6,12 @@ import java.nio.file.Paths;
 import java.sql.SQLException;
 
 import org.jump.entity.ApplicationConfiguration;
+import org.jump.entity.ExecutionStatus;
 import org.jump.parser.JumpGen;
 import org.jump.parser.ParseResult;
+import org.jump.service.CacheManager;
 import org.jump.service.Executor;
+import org.jump.service.ResultWriter;
 import org.jump.validation.CloValidator;
 
 public class Main {
@@ -34,16 +37,24 @@ public class Main {
                 System.exit(0);
             }
 
-            new Executor().execute(conf, result.getCommands());
-            System.out.println("Successfully Completed.");
+            ExecutionStatus executionStatus = new Executor().execute(conf, result.getCommands());
+            System.out.println(getExecutionStatus(executionStatus));
+
+            if (CacheManager.allkeys().size() > 0) {
+                for (String cacheKey: CacheManager.allkeys()) {
+                    ResultWriter.writeRow(cacheKey + ": " + CacheManager.itemsForKey(cacheKey));
+                }
+            }
+
+            ResultWriter.close();
         } catch (NoSuchFileException nsfe) {
 
-            System.out.println("Failed.");
+            System.out.println(getExecutionStatus(ExecutionStatus.FAILED));
             System.out.println("File not accessible: " + conf.getFileName());
             printException(nsfe, conf);
         } catch (SQLException see) {
 
-            System.out.println("Failed.");
+            System.out.println(getExecutionStatus(ExecutionStatus.FAILED));
             String message = String.format(
                 "Error with connection database/executing query: message: [%s] error-code: [%d] sql-state: [%s], Check whether sql-server host is reachable/correct, or error with sql.",
                 see.getMessage(),
@@ -53,7 +64,7 @@ public class Main {
             printException(see, conf);
         } catch (Exception e) {
 
-            System.out.println("Failed.");
+            System.out.println(getExecutionStatus(ExecutionStatus.FAILED));
             System.out.println(e.getMessage());
             printException(e, conf);
 
@@ -71,5 +82,24 @@ public class Main {
     private static String getFileContents(String fileName) throws Exception {
         byte[] content = Files.readAllBytes(Paths.get(fileName));
         return new String(content);
+    }
+
+    public static String getExecutionStatus(ExecutionStatus executionStatus) {
+        switch (executionStatus) {
+            case FAILED:
+                return "Failed with error";
+
+            case MANUAL_ROLLBACK:
+                return "Executed and rolled back successfully.";
+
+            case SUCCESSFUL:
+                return "Success!";
+
+            case SUCCESSFUL_DRY_RUN:
+                return "Dry run completed successfully";
+
+            default:
+                throw new RuntimeException("Execution status not defined: " + executionStatus.toString());
+        }
     }
 }
