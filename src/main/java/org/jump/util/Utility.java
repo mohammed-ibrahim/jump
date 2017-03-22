@@ -1,8 +1,11 @@
 package org.jump.util;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Scanner;
 
 import org.jump.entity.ApplicationConfiguration;
+import org.jump.entity.ExecutionStatus;
 
 public class Utility {
 
@@ -41,5 +44,29 @@ public class Utility {
 
     public static String escape(String item) {
         return item.replace("'", "\\'");
+    }
+
+    public static String getFileContents(String fileName) throws Exception {
+        byte[] content = Files.readAllBytes(Paths.get(fileName));
+        return new String(content);
+    }
+
+    public static String getExecutionStatus(ExecutionStatus executionStatus) {
+        switch (executionStatus) {
+            case FAILED:
+                return "Failed with error";
+
+            case MANUAL_ROLLBACK:
+                return "Executed and rolled back successfully.";
+
+            case SUCCESSFUL:
+                return "Success!";
+
+            case SUCCESSFUL_DRY_RUN:
+                return "Dry run completed successfully";
+
+            default:
+                throw new RuntimeException("Execution status not defined: " + executionStatus.toString());
+        }
     }
 }
