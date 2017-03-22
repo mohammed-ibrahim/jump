@@ -23,9 +23,11 @@ public class Executor {
         }
 
         if (!appConfig.isDryRun()) {
+
             sqlExecutor.commitAndClose();
             return ExecutionStatus.SUCCESSFUL;
         } else {
+
             sqlExecutor.rollbackAndClose();
             return ExecutionStatus.SUCCESSFUL_DRY_RUN;
         }
@@ -36,12 +38,14 @@ public class Executor {
 
             SqlCommand sqlCommand = (SqlCommand)command;
             for (String sql: sqlCommand.getSqls()) {
+
                 sqlExecutor.executeUpdate(sql);
             }
 
         } else if (command instanceof InsertCommand) {
 
-            new InsertCommandExecutor(appConfig, (InsertCommand)command, sqlExecutor).execute();
+            InsertCommandExecutor insertCommandExecutor = new InsertCommandExecutor(appConfig, (InsertCommand)command, sqlExecutor);
+            insertCommandExecutor.execute();
         } else if (command instanceof RollbackCommand) {
 
             sqlExecutor.rollbackAndClose();

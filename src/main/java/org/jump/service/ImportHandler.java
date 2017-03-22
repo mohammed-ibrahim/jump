@@ -28,11 +28,11 @@ public class ImportHandler {
 
     private TransactionalSqlExecutor sqlExecutor;
 
-    public ImportHandler(TransactionalSqlExecutor sqlExecutor, ApplicationConfiguration appConfig) {
+    public ImportHandler(TransactionalSqlExecutor sqlExecutor) {
         this.sqlExecutor = sqlExecutor;
     }
 
-    public void importRows(ApplicationConfiguration appConfig, InsertCommand insertCommand, List<IField> fields) throws Exception {
+    public void importRows(InsertCommand insertCommand, List<IField> fields) throws Exception {
         this.fields = fields;
         this.insertCommand = insertCommand;
 
@@ -66,11 +66,18 @@ public class ImportHandler {
 
     private void executeWithCacheEntry(String sql) throws Exception {
         if (this.insertCommand.getStorageIdentifier() != null
-                && !this.insertCommand.getStorageIdentifier().isEmpty()) {
+            && this.insertCommand.getStorageIdentifier().isEmpty()) {
+
+            throw new RuntimeException("Cache key entry for insert(.., .., 'cache_key_entry') cannot be null");
+        }
+
+        if (this.insertCommand.getStorageIdentifier() != null
+            && !this.insertCommand.getStorageIdentifier().isEmpty()) {
 
             List<String> insertedIds = this.sqlExecutor.executeUpdateWithImpactedIds(sql);
-            CacheManager.addEntry(this.insertCommand.getStorageIdentifier(), insertedIds);
+            CacheManager.getInstance().addEntry(this.insertCommand.getStorageIdentifier(), insertedIds);
         } else {
+
             this.sqlExecutor.executeUpdate(sql);
         }
     }

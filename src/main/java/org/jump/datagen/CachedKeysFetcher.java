@@ -31,7 +31,7 @@ public class CachedKeysFetcher implements IField {
     public String getNext() {
 
         if (this.iterator == null || !this.iterator.hasNext()) {
-            this.iterator = CacheManager.getIteratorForKey(this.cacheKey);
+            this.iterator = CacheManager.getInstance().getIteratorForKey(this.cacheKey);
         }
 
         return this.iterator.next();

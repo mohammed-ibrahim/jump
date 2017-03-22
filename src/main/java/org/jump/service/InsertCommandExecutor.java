@@ -22,9 +22,11 @@ public class InsertCommandExecutor {
     }
 
     public void execute() throws Exception {
-        List<IField> fields = new FieldFactory().build(this.appConfig, insertCommand, this.sqlExecutor);
+        FieldFactory factory = new FieldFactory();
+        List<IField> fields = factory.build(this.appConfig, insertCommand, this.sqlExecutor);
 
-        new ImportHandler(sqlExecutor, appConfig).importRows(appConfig, insertCommand, fields);
+        ImportHandler importHandler = new ImportHandler(sqlExecutor);
+        importHandler.importRows(insertCommand, fields);
     }
 
 }

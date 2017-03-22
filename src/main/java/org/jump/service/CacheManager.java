@@ -11,30 +11,40 @@ import org.apache.commons.lang.StringUtils;
 
 public class CacheManager {
 
-    private static Map<String, List<String>> items = new HashMap<String, List<String>>();
+    private static CacheManager instance = new CacheManager();
 
-    public static void addEntry(String cacheKey, List<String> ids) {
-        if (!items.keySet().contains(cacheKey)) {
-            items.put(cacheKey, new ArrayList<String>());
-        }
-
-        items.get(cacheKey).addAll(ids);
+    public static CacheManager getInstance() {
+        return instance;
     }
 
-    public static Iterator<String> getIteratorForKey(String key) {
-        if (!items.containsKey(key)) {
+    private CacheManager() {
+
+    }
+
+    private Map<String, List<String>> items = new HashMap<String, List<String>>();
+
+    public void addEntry(String cacheKey, List<String> ids) {
+        if (!this.items.keySet().contains(cacheKey)) {
+            this.items.put(cacheKey, new ArrayList<String>());
+        }
+
+        this.items.get(cacheKey).addAll(ids);
+    }
+
+    public Iterator<String> getIteratorForKey(String key) {
+        if (!this.items.containsKey(key)) {
             String message = "Cache key missing: " + key;
             throw new RuntimeException(message);
         }
 
-        return items.get(key).iterator();
+        return this.items.get(key).iterator();
     }
 
-    public static Set<String> allkeys() {
-        return items.keySet();
+    public Set<String> allkeys() {
+        return this.items.keySet();
     }
 
-    public static String itemsForKey(String key) {
-        return StringUtils.join(items.get(key), ",");
+    public String itemsForKey(String key) {
+        return StringUtils.join(this.items.get(key), ",");
     }
 }

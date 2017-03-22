@@ -11,7 +11,7 @@ import org.jump.parser.JumpGen;
 import org.jump.parser.ParseResult;
 import org.jump.service.CacheManager;
 import org.jump.service.Executor;
-import org.jump.service.ResultWriter;
+import org.jump.service.FileLogger;
 import org.jump.validation.CloValidator;
 
 public class Main {
@@ -40,13 +40,13 @@ public class Main {
             ExecutionStatus executionStatus = new Executor().execute(conf, result.getCommands());
             System.out.println(getExecutionStatus(executionStatus));
 
-            if (CacheManager.allkeys().size() > 0) {
-                for (String cacheKey: CacheManager.allkeys()) {
-                    ResultWriter.writeRow(cacheKey + ": " + CacheManager.itemsForKey(cacheKey));
+            if (CacheManager.getInstance().allkeys().size() > 0) {
+                for (String cacheKey: CacheManager.getInstance().allkeys()) {
+                    FileLogger.getInstance().writeRow(cacheKey + ": " + CacheManager.getInstance().itemsForKey(cacheKey));
                 }
             }
 
-            ResultWriter.close();
+            FileLogger.getInstance().close();
         } catch (NoSuchFileException nsfe) {
 
             System.out.println(getExecutionStatus(ExecutionStatus.FAILED));
