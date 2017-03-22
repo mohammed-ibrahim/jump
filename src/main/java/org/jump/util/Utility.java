@@ -17,7 +17,10 @@ public class Utility {
         System.out.print(message + ": ");
         Scanner in = new Scanner(System.in);
 
-        return in.next();
+        String userInput = in.next();
+        in.close();
+
+        return userInput;
     }
 
     public static String buildUrl(ApplicationConfiguration appConfig) {
