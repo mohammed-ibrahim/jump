@@ -35,12 +35,15 @@ public class Main {
             }
 
             new Executor().execute(conf, result.getCommands());
+            System.out.println("Successfully Completed.");
         } catch (NoSuchFileException nsfe) {
 
+            System.out.println("Failed.");
             System.out.println("File not accessible: " + conf.getFileName());
             printException(nsfe, conf);
         } catch (SQLException see) {
 
+            System.out.println("Failed.");
             String message = String.format(
                 "Error with connection database/executing query: message: [%s] error-code: [%d] sql-state: [%s], Check whether sql-server host is reachable/correct, or error with sql.",
                 see.getMessage(),
@@ -50,6 +53,7 @@ public class Main {
             printException(see, conf);
         } catch (Exception e) {
 
+            System.out.println("Failed.");
             System.out.println(e.getMessage());
             printException(e, conf);
 

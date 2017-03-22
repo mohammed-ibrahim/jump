@@ -44,6 +44,37 @@ public class TransactionalSqlExecutor {
         }
     }
 
+    public List<String> executeUpdateWithImpactedIds(String sql) throws Exception {
+        if (this.appConfig.isLogSql()) {
+            System.out.println("EXECUTING: " + sql);
+        }
+
+        try {
+            Statement stmt = this.connection.createStatement();
+            int affectedRows = stmt.executeUpdate(sql);
+
+            if (affectedRows == 0) {
+                throw new SQLException("Creating user failed, no rows affected.");
+            }
+
+            ResultSet generatedKeys = stmt.getGeneratedKeys();
+
+            List<String> impactedIds = new ArrayList<String>();
+
+            while (generatedKeys.next()) {
+                impactedIds.add(generatedKeys.getString(1));
+            }
+
+            stmt.close();
+
+            return impactedIds;
+        } catch (Exception e) {
+            System.out.println("ERROR WITH SQL: " + sql);
+
+            throw e;
+        }
+    }
+
     public List<String> getItemsFromSql(String sql) throws Exception {
         Statement stmt = connection.createStatement();
         ResultSet resultSet = stmt.executeQuery(sql);

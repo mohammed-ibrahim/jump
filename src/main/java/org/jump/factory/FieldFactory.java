@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jump.datagen.BetweenFieldGenerator;
+import org.jump.datagen.CachedKeysFetcher;
 import org.jump.datagen.DatabaseRowFetcher;
 import org.jump.datagen.FakeFieldWrapper;
 import org.jump.datagen.IField;
@@ -28,7 +29,8 @@ public class FieldFactory {
         BETWEEN,
         RANDOM_BETWEEN,
         FAKE,
-        NOW;
+        NOW,
+        INSERTED_IDS;
     }
 
     public List<IField> build(ApplicationConfiguration appConfig, InsertCommand insertCommand, TransactionalSqlExecutor sqlExecutor) {
@@ -84,6 +86,9 @@ public class FieldFactory {
 
             case NOW:
                 return new NowField();
+
+            case INSERTED_IDS:
+                return new CachedKeysFetcher(fieldConfig);
 
             default:
                 throw new RuntimeException(String.format("Function [%s] not implemented yet, please contact support.", method.toString().toUpperCase()));

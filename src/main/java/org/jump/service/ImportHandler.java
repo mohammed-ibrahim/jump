@@ -50,7 +50,7 @@ public class ImportHandler {
             if ((i > 0) && (i % MAX_ROWS_PER_ITERATION == 0)) {
 
                 String sql = getInsertPrefix() + sb.toString();
-                this.sqlExecutor.executeUpdate(sql);
+                executeWithCacheEntry(sql);
                 sb.setLength(0);
                 prefix = "";
             }
@@ -58,9 +58,20 @@ public class ImportHandler {
 
         if (sb.length() > 0) {
             String sql = getInsertPrefix() + sb.toString();
-            this.sqlExecutor.executeUpdate(sql);
+            executeWithCacheEntry(sql);
             sb.setLength(0);
             prefix = "";
+        }
+    }
+
+    private void executeWithCacheEntry(String sql) throws Exception {
+        if (this.insertCommand.getStorageIdentifier() != null
+                && !this.insertCommand.getStorageIdentifier().isEmpty()) {
+
+            List<String> insertedIds = this.sqlExecutor.executeUpdateWithImpactedIds(sql);
+            CacheManager.addEntry(this.insertCommand.getStorageIdentifier(), insertedIds);
+        } else {
+            this.sqlExecutor.executeUpdate(sql);
         }
     }
 
