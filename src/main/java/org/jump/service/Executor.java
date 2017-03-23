@@ -50,6 +50,10 @@ public class Executor {
             sqlExecutor.rollbackAndClose();
             return ExecutionStatus.MANUAL_ROLLBACK;
 
+        case BASIC_VARIABLE:
+            CacheManager.getInstance().addVariable(command.getVariableCommand().getName(), command.getVariableCommand().getValue());
+            break;
+
         default:
             String message = String.format("Command %s unknown.", command.getType().toString());
             throw new RuntimeException(message);

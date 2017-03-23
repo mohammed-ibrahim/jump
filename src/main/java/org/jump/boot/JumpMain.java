@@ -33,9 +33,9 @@ public class JumpMain {
             System.out.println(Utility.getExecutionStatus(executionStatus));
 
             // 4. Write the cached keys
-            if (CacheManager.getInstance().allkeys().size() > 0) {
-                for (String cacheKey: CacheManager.getInstance().allkeys()) {
-                    FileLogger.getInstance().writeRow(cacheKey + ": " + CacheManager.getInstance().itemsForKey(cacheKey));
+            if (CacheManager.getInstance().allInsertedIdKeys().size() > 0) {
+                for (String cacheKey: CacheManager.getInstance().allInsertedIdKeys()) {
+                    FileLogger.getInstance().writeRow(cacheKey + ": " + CacheManager.getInstance().itemsForInsertedIdKey(cacheKey));
                 }
             }
 

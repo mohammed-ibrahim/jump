@@ -4,5 +4,6 @@ public enum CommandType {
 
     INSERT_COMMAND,
     SQL_COMMAND,
-    ROLLBACK_COMMAND;
+    ROLLBACK_COMMAND,
+    BASIC_VARIABLE;
 }

@@ -18,7 +18,7 @@ public class InsertCommand extends AbstractCommand {
 
     @Getter
     @Setter
-    private Integer numRows;
+    private Variable numRows;
 
     @Getter
     @Setter
