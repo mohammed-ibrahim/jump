@@ -45,8 +45,8 @@ public class JumpGen {
 
         ParseTree tree = parser.statement();
         Analyzer builder = new Analyzer();
-        ArrayList<Object> res = (ArrayList<Object>) builder.visit(tree);
+        ArrayList<AbstractCommand> res = (ArrayList<AbstractCommand>) builder.visit(tree);
 
-        return new ParseResult(res, null, null);
+        return new ParseResult(res);
     }
 }

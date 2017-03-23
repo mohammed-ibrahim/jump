@@ -57,7 +57,7 @@ public class Utility {
     public static String getExecutionStatus(ExecutionStatus executionStatus) {
         switch (executionStatus) {
             case FAILED:
-                return "Failed with error";
+                return "Failed with error.";
 
             case MANUAL_ROLLBACK:
                 return "Executed and rolled back successfully.";
@@ -66,7 +66,10 @@ public class Utility {
                 return "Success!";
 
             case SUCCESSFUL_DRY_RUN:
-                return "Dry run completed successfully";
+                return "Dry run completed successfully.";
+
+            case PARSE_FAILURE:
+                return "There is an error in input file.";
 
             default:
                 throw new RuntimeException("Execution status not defined: " + executionStatus.toString());

@@ -36,7 +36,7 @@ public class OperationStatusReporter {
 
             ParseFailureException pfe = (ParseFailureException)e;
             String message = String.format("Error in script, token: %s, line: %d char: %d", pfe.getOffendingToken(), pfe.getLine(), pfe.getCharPositionInLine());
-            displayMessage(ExecutionStatus.FAILED, message, pfe);
+            displayMessage(ExecutionStatus.PARSE_FAILURE, message, pfe);
         } else {
 
 

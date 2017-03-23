@@ -58,7 +58,9 @@ public class Analyzer extends JumpBaseVisitor<Object> {
 
     @Override
     public Object visitRollbackStatement(JumpParser.RollbackStatementContext ctx) {
-        return new RollbackCommand();
+        AbstractCommand command = new AbstractCommand();
+        command.setType(CommandType.ROLLBACK_COMMAND);
+        return command;
     }
 
     @Override

@@ -4,16 +4,14 @@ import java.util.List;
 
 import org.jump.entity.ApplicationConfiguration;
 import org.jump.entity.ExecutionStatus;
-import org.jump.parser.InsertCommand;
-import org.jump.parser.RollbackCommand;
-import org.jump.parser.SqlCommand;
+import org.jump.parser.AbstractCommand;
 
 public class Executor {
 
-    public ExecutionStatus execute(ApplicationConfiguration appConfig, List<Object> commands) throws Exception {
+    public ExecutionStatus execute(ApplicationConfiguration appConfig, List<AbstractCommand> commands) throws Exception {
 
         TransactionalSqlExecutor sqlExecutor = new TransactionalSqlExecutor(appConfig);
-        for (Object command: commands) {
+        for (AbstractCommand command: commands) {
             ExecutionStatus executionStatus = runCommand(appConfig, command, sqlExecutor);
 
             if (executionStatus.equals(ExecutionStatus.MANUAL_ROLLBACK)) {
@@ -33,25 +31,28 @@ public class Executor {
         }
     }
 
-    private ExecutionStatus runCommand(ApplicationConfiguration appConfig, Object command, TransactionalSqlExecutor sqlExecutor) throws Exception {
-        if (command instanceof SqlCommand) {
+    private ExecutionStatus runCommand(ApplicationConfiguration appConfig, AbstractCommand command, TransactionalSqlExecutor sqlExecutor) throws Exception {
 
-            SqlCommand sqlCommand = (SqlCommand)command;
-            for (String sql: sqlCommand.getSqls()) {
+        switch (command.getType()) {
+        case SQL_COMMAND:
+            for (String sql: command.getSqlCommand().getSqls()) {
 
                 sqlExecutor.executeUpdate(sql);
             }
+            break;
 
-        } else if (command instanceof InsertCommand) {
-
-            InsertCommandExecutor insertCommandExecutor = new InsertCommandExecutor(appConfig, (InsertCommand)command, sqlExecutor);
+        case INSERT_COMMAND:
+            InsertCommandExecutor insertCommandExecutor = new InsertCommandExecutor(appConfig, command.getInsertCommand(), sqlExecutor);
             insertCommandExecutor.execute();
-        } else if (command instanceof RollbackCommand) {
+            break;
 
+        case ROLLBACK_COMMAND:
             sqlExecutor.rollbackAndClose();
             return ExecutionStatus.MANUAL_ROLLBACK;
-        } else {
-            throw new RuntimeException(command.getClass() + " command is not known");
+
+        default:
+            String message = String.format("Command %s unknown.", command.getType().toString());
+            throw new RuntimeException(message);
         }
 
         return ExecutionStatus.SUCCESSFUL;

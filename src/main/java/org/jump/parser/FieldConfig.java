@@ -2,12 +2,21 @@ package org.jump.parser;
 
 import java.util.*;
 
+import lombok.Getter;
+import lombok.Setter;
 
 public class FieldConfig {
+
+    @Getter
+    @Setter
     private String fieldName;
 
+    @Getter
+    @Setter
     private String fnName;
 
+    @Getter
+    @Setter
     private ArrayList<String> params;
 
     public FieldConfig(String fieldName, String fnName, ArrayList<String> params) {
@@ -18,30 +27,6 @@ public class FieldConfig {
 
     public FieldConfig() {
         params = new ArrayList<String>();
-    }
-
-    public String getFieldName() {
-        return fieldName;
-    }
-
-    public void setFieldName(String fieldName) {
-        this.fieldName = fieldName;
-    }
-
-    public String getFnName() {
-        return fnName;
-    }
-
-    public void setFnName(String fnName) {
-        this.fnName = fnName;
-    }
-
-    public ArrayList<String> getParams() {
-        return params;
-    }
-
-    public void setParams(ArrayList<String> params) {
-        this.params = params;
     }
 
     public String toString() {

@@ -1,20 +1,22 @@
 package org.jump.parser;
 
 import java.util.*;
-import org.jump.parser.grammer.*;
 
-public class SqlCommand implements Command {
+import lombok.Getter;
+import lombok.Setter;
+
+public class SqlCommand extends AbstractCommand {
+
+    public SqlCommand() {
+        this.type = CommandType.SQL_COMMAND;
+    }
+
+    @Getter
+    @Setter
     private ArrayList<String> sqls = new ArrayList<String>();
 
-    public ArrayList<String> getSqls() {
-        return this.sqls;
-    }
+    public SqlCommand getSqlCommand() {
 
-    public void setSqls(ArrayList<String> sqls) {
-        this.sqls = sqls;
-    }
-
-    public String toString() {
-        return this.sqls.toString();
+        return this;
     }
 }
