@@ -35,17 +35,9 @@ public class ApplicationConfiguration {
 
     @Getter
     @Setter
-    private boolean logSql = false;
-
-    @Getter
-    @Setter
     private boolean verbose = false;
 
     @Getter
     @Setter
     private boolean dryRun = false;
-
-    @Getter
-    @Setter
-    private boolean success = false;
 }

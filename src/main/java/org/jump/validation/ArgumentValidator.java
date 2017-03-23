@@ -20,8 +20,6 @@ public class ArgumentValidator {
 
     private static String PWD = "password";
 
-    private static String LOG_SQL = "logsql";
-
     private static String HELP = "help";
 
     private static String DRY_RUN = "dry-run";
@@ -33,16 +31,13 @@ public class ArgumentValidator {
     public ApplicationConfiguration validate(String[] args) {
         Options options = new Options();
 
-        options.addOption(
-                new Option("d", DATA_BASE, true, "Name of the database where to which the changes are to be made."));
+        options.addOption(new Option("d", DATA_BASE, true, "Name of the database where to which the changes are to be made."));
         options.addOption(new Option("u", USER, true, "Database username."));
         options.addOption(new Option("p", PWD, true, "Password for the usename."));
         options.addOption(new Option("f", FILE_NAME, true, "Input jump script file path."));
-        options.addOption(new Option("l", LOG_SQL, false, "Log the sql statements that are executed."));
         options.addOption(new Option("v", VERBOSE, false, "Verbose."));
         options.addOption(new Option("h", HELP, false, "Help page."));
-        options.addOption(new Option("r", DRY_RUN, false,
-                "Dry run, rollback the change after the completion of import, Note: Rollback only works for import changes and does not rollback schema changes."));
+        options.addOption(new Option("r", DRY_RUN, false, "Dry run, rollback the change after the completion of import, Note: Rollback only works for import changes and does not rollback schema changes."));
         options.addOption(new Option("t", HOST, true, "Sql server host."));
 
         GnuParser parser = new GnuParser();
@@ -52,24 +47,18 @@ public class ArgumentValidator {
         try {
             cli = parser.parse(options, args);
         } catch (UnrecognizedOptionException uoe) {
-            conf.setSuccess(false);
-            System.out.println("Invalid option");
-            displayHelp(options);
 
-            System.exit(0);
+            System.out.println("Invalid option");
+            displayHelpAndExit(options);
         } catch (ParseException pe) {
-            conf.setSuccess(false);
-            System.out.println("Invalid option");
-            displayHelp(options);
 
-            System.exit(0);
+            System.out.println("Invalid option");
+            displayHelpAndExit(options);
         }
 
         if (cli.hasOption(HELP)) {
-            displayHelp(options);
+            displayHelpAndExit(options);
         }
-
-        conf.setSuccess(false);
 
         if (!cli.hasOption(FILE_NAME)) {
 
@@ -99,10 +88,6 @@ public class ArgumentValidator {
             conf.setPassword(password);
         }
 
-        if (cli.hasOption(LOG_SQL)) {
-            conf.setLogSql(true);
-        }
-
         if (cli.hasOption(VERBOSE)) {
             conf.setVerbose(true);
         }
@@ -117,17 +102,16 @@ public class ArgumentValidator {
             conf.setHost(cli.getOptionValue(HOST));
         }
 
-        conf.setSuccess(true);
-
         return conf;
     }
 
-    private void displayHelp(Options options) {
+    private void displayHelpAndExit(Options options) {
         HelpFormatter formater = new HelpFormatter();
 
         formater.printHelp(
                 "java -jar jump.jar --file <file_path> --database <database_name> --username <user_name> --password <password>",
                 options);
-    }
 
+        System.exit(0);
+    }
 }
