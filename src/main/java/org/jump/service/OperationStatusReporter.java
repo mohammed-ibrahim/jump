@@ -5,6 +5,7 @@ import java.sql.SQLException;
 
 import org.jump.entity.ApplicationConfiguration;
 import org.jump.entity.ExecutionStatus;
+import org.jump.exception.ParseFailureException;
 import org.jump.util.Utility;
 
 public class OperationStatusReporter {
@@ -20,30 +21,38 @@ public class OperationStatusReporter {
         if (e instanceof NoSuchFileException) {
 
             NoSuchFileException nsfe = (NoSuchFileException)e;
-            System.out.println(Utility.getExecutionStatus(ExecutionStatus.FAILED));
-            System.out.println("File not accessible: " + nsfe.getFile());
-            printException(e, true);
+            displayMessage(ExecutionStatus.FAILED, "File not accessible: " + nsfe.getFile(), e);
         } else if (e instanceof SQLException) {
 
             SQLException see = (SQLException)e;
-            System.out.println(Utility.getExecutionStatus(ExecutionStatus.FAILED));
+
             String message = String.format(
                 "Error with connection database/executing query: message: [%s] error-code: [%d] sql-state: [%s], Check whether sql-server host is reachable/correct, or error with sql.",
                 see.getMessage(),
                 see.getErrorCode(),
                 see.getSQLState());
-            System.out.println(message);
-            printException(see, true);
+            displayMessage(ExecutionStatus.FAILED, message, see);
+        } else if (e instanceof ParseFailureException) {
+
+            ParseFailureException pfe = (ParseFailureException)e;
+            String message = String.format("Error in script, token: %s, line: %d char: %d", pfe.getOffendingToken(), pfe.getLine(), pfe.getCharPositionInLine());
+            displayMessage(ExecutionStatus.FAILED, message, pfe);
         } else {
 
-            System.out.println(Utility.getExecutionStatus(ExecutionStatus.FAILED));
-            System.out.println(e.getMessage());
-            printException(e, true);
+
+
+            displayMessage(ExecutionStatus.FAILED, e.getMessage(), e);
         }
     }
 
-    private void printException(Exception e, boolean isVerbose) {
-        if (isVerbose) {
+    private void displayMessage(ExecutionStatus executionStatus, String message, Exception e) {
+        System.out.println(Utility.getExecutionStatus(executionStatus));
+        System.out.println(message);
+        printStackTrace(e);
+    }
+
+    private void printStackTrace(Exception e) {
+        if (this.applicationConfiguration.isVerbose()) {
             e.printStackTrace();
         } else {
             System.out.println("Use verbose command line option for more details, use --verbose");

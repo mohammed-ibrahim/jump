@@ -29,7 +29,7 @@ public class TransactionalSqlExecutor {
     }
 
     public void executeUpdate(String sql) throws Exception {
-        if (this.appConfig.isLogSql()) {
+        if (this.appConfig.isVerbose()) {
             System.out.println("EXECUTING: " + sql);
         }
 
@@ -45,7 +45,7 @@ public class TransactionalSqlExecutor {
     }
 
     public List<String> executeUpdateWithImpactedIds(String sql) throws Exception {
-        if (this.appConfig.isLogSql()) {
+        if (this.appConfig.isVerbose()) {
             System.out.println("EXECUTING: " + sql);
         }
 

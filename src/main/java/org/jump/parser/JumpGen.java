@@ -2,16 +2,13 @@ package org.jump.parser;
 
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.antlr.v4.runtime.BailErrorStrategy;
 import java.util.*;
 
 import org.jump.parser.grammer.*;
 
-import java.io.StringWriter;
-import java.io.PrintWriter;
-
 public class JumpGen {
+    @SuppressWarnings("unchecked")
     public static void main(String[] args) {
         String str = "";
         str += "   # hello world \n sql() {\"yes\"} \n";
@@ -34,6 +31,7 @@ public class JumpGen {
         System.out.println("Finally obtained string is: " + res.toString());
     }
 
+    @SuppressWarnings("unchecked")
     public ParseResult parse(String queryString) {
         ANTLRInputStream input = new ANTLRInputStream(queryString);
         JumpLexer lexer = new JumpLexer(input);

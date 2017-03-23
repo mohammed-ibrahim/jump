@@ -1,6 +1,7 @@
 package org.jump.parser;
 
 import org.antlr.v4.runtime.*;
+import org.jump.exception.ParseFailureException;
 
 public class DescriptiveErrorListener extends BaseErrorListener {
     public static DescriptiveErrorListener INSTANCE = new DescriptiveErrorListener();
@@ -12,12 +13,11 @@ public class DescriptiveErrorListener extends BaseErrorListener {
     {
 
         String sourceName = recognizer.getInputStream().getSourceName();
+
         if (!sourceName.isEmpty()) {
-            sourceName = String.format("%s:%d:%d: ", sourceName, line, charPositionInLine);
+            sourceName = msg;
         }
 
-        //System.err.println(sourceName+"line "+line+":"+charPositionInLine+" "+msg);
-
-        throw new RuntimeException(sourceName+"line "+line+":"+charPositionInLine+" "+msg);
+        throw new ParseFailureException(sourceName, line, charPositionInLine, e.getOffendingToken().getText());
     }
 }
