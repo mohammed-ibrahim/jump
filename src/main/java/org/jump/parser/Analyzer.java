@@ -1,6 +1,8 @@
 package org.jump.parser;
 
 import org.jump.parser.grammer.*;
+import org.jump.util.Utility;
+
 import java.util.*;
 import org.apache.commons.lang3.StringUtils;
 
@@ -39,12 +41,10 @@ public class Analyzer extends JumpBaseVisitor<Object> {
         String numRowsText = ctx.WORD(1).getText();
 
         if (!StringUtils.isNumeric(numRowsText)) {
-            throw new RuntimeException("2nd Parameter passed to insert(table_name, num_rows) should be integer: Line: "
-                + ctx.getStart().getLine()
-                + " Col: "
-                + ctx.getStart().getCharPositionInLine());
+            cmd.setNumRows(new Variable(VariableType.NAMED, numRowsText));
+        } else {
+            cmd.setNumRows(new Variable(VariableType.STATIC, numRowsText));
         }
-        cmd.setNumRows(Integer.parseInt(ctx.WORD(1).getText()));
 
         if (ctx.WORD().size() > 2) {
             cmd.setStorageIdentifier(ctx.WORD(2).getText());
@@ -61,6 +61,20 @@ public class Analyzer extends JumpBaseVisitor<Object> {
         AbstractCommand command = new AbstractCommand();
         command.setType(CommandType.ROLLBACK_COMMAND);
         return command;
+    }
+
+    @Override
+    public Object visitVariableAssignment(JumpParser.VariableAssignmentContext ctx) {
+        String lhs = ctx.WORD(0).getText();
+        String rhs = ctx.WORD(1).getText();
+
+        if (!Utility.isNumeric(rhs)) {
+            String message = "Rhs of variable needs to be an integer!! Rhs is " +  ctx.WORD(1).getText();
+            throw new RuntimeException(message);
+        }
+
+        VariableCommand variableCommand = new VariableCommand(lhs, rhs);
+        return variableCommand;
     }
 
     @Override

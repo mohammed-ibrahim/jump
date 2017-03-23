@@ -122,7 +122,7 @@ public class JumpParser extends Parser {
             setState(16);
             _errHandler.sync(this);
             _la = _input.LA(1);
-            while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__4) | (1L << T__5))) != 0)) {
+            while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__4) | (1L << T__5) | (1L << WORD))) != 0)) {
                 {
                 {
                 setState(13);
@@ -181,6 +181,18 @@ public class JumpParser extends Parser {
             else return visitor.visitChildren(this);
         }
     }
+    public static class VariableAssignmentContext extends CommandContext {
+        public List<TerminalNode> WORD() { return getTokens(JumpParser.WORD); }
+        public TerminalNode WORD(int i) {
+            return getToken(JumpParser.WORD, i);
+        }
+        public VariableAssignmentContext(CommandContext ctx) { copyFrom(ctx); }
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if ( visitor instanceof JumpVisitor ) return ((JumpVisitor<? extends T>)visitor).visitVariableAssignment(this);
+            else return visitor.visitChildren(this);
+        }
+    }
     public static class InsertStatementContext extends CommandContext {
         public TerminalNode OPENPAREN() { return getToken(JumpParser.OPENPAREN, 0); }
         public List<TerminalNode> WORD() { return getTokens(JumpParser.WORD); }
@@ -204,7 +216,7 @@ public class JumpParser extends Parser {
         enterRule(_localctx, 2, RULE_command);
         int _la;
         try {
-            setState(49);
+            setState(52);
             switch (_input.LA(1)) {
             case T__0:
                 _localctx = new SqlStatementContext(_localctx);
@@ -287,6 +299,18 @@ public class JumpParser extends Parser {
                 match(CLOSEPAREN);
                 }
                 break;
+            case WORD:
+                _localctx = new VariableAssignmentContext(_localctx);
+                enterOuterAlt(_localctx, 4);
+                {
+                setState(49);
+                match(WORD);
+                setState(50);
+                match(EQ);
+                setState(51);
+                match(WORD);
+                }
+                break;
             default:
                 throw new NoViableAltException(this);
             }
@@ -336,21 +360,21 @@ public class JumpParser extends Parser {
             _localctx = new FieldConfigListContext(_localctx);
             enterOuterAlt(_localctx, 1);
             {
-            setState(51);
+            setState(54);
             field_config();
-            setState(56);
+            setState(59);
             _errHandler.sync(this);
             _la = _input.LA(1);
             while (_la==T__2) {
                 {
                 {
-                setState(52);
+                setState(55);
                 match(T__2);
-                setState(53);
+                setState(56);
                 field_config();
                 }
                 }
-                setState(58);
+                setState(61);
                 _errHandler.sync(this);
                 _la = _input.LA(1);
             }
@@ -416,23 +440,23 @@ public class JumpParser extends Parser {
         Field_configContext _localctx = new Field_configContext(_ctx, getState());
         enterRule(_localctx, 6, RULE_field_config);
         try {
-            setState(71);
+            setState(74);
             switch ( getInterpreter().adaptivePredict(_input,5,_ctx) ) {
             case 1:
                 _localctx = new FieldConfigContext(_localctx);
                 enterOuterAlt(_localctx, 1);
                 {
-                setState(59);
-                match(WORD);
-                setState(60);
-                match(EQ);
-                setState(61);
-                match(WORD);
                 setState(62);
-                match(OPENPAREN);
+                match(WORD);
                 setState(63);
-                param_list();
+                match(EQ);
                 setState(64);
+                match(WORD);
+                setState(65);
+                match(OPENPAREN);
+                setState(66);
+                param_list();
+                setState(67);
                 match(CLOSEPAREN);
                 }
                 break;
@@ -440,15 +464,15 @@ public class JumpParser extends Parser {
                 _localctx = new EmptyFieldConfigContext(_localctx);
                 enterOuterAlt(_localctx, 2);
                 {
-                setState(66);
-                match(WORD);
-                setState(67);
-                match(EQ);
-                setState(68);
-                match(WORD);
                 setState(69);
-                match(OPENPAREN);
+                match(WORD);
                 setState(70);
+                match(EQ);
+                setState(71);
+                match(WORD);
+                setState(72);
+                match(OPENPAREN);
+                setState(73);
                 match(CLOSEPAREN);
                 }
                 break;
@@ -499,21 +523,21 @@ public class JumpParser extends Parser {
             _localctx = new ParamListContext(_localctx);
             enterOuterAlt(_localctx, 1);
             {
-            setState(73);
+            setState(76);
             item();
-            setState(78);
+            setState(81);
             _errHandler.sync(this);
             _la = _input.LA(1);
             while (_la==T__2) {
                 {
                 {
-                setState(74);
+                setState(77);
                 match(T__2);
-                setState(75);
+                setState(78);
                 item();
                 }
                 }
-                setState(80);
+                setState(83);
                 _errHandler.sync(this);
                 _la = _input.LA(1);
             }
@@ -560,7 +584,7 @@ public class JumpParser extends Parser {
             _localctx = new ParamItemContext(_localctx);
             enterOuterAlt(_localctx, 1);
             {
-            setState(81);
+            setState(84);
             _la = _input.LA(1);
             if ( !(_la==STRING || _la==WORD) ) {
             _errHandler.recoverInline(this);
@@ -581,28 +605,28 @@ public class JumpParser extends Parser {
     }
 
     public static final String _serializedATN =
-        "\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\17V\4\2\t\2\4\3\t"+
+        "\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\17Y\4\2\t\2\4\3\t"+
         "\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\3\2\3\2\7\2\21\n\2\f\2\16\2\24\13\2"+
         "\3\3\3\3\3\3\3\3\3\3\3\3\3\3\7\3\35\n\3\f\3\16\3 \13\3\3\3\3\3\3\3\3\3"+
-        "\3\3\3\3\3\3\3\3\5\3*\n\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\5\3\64\n\3\3"+
-        "\4\3\4\3\4\7\49\n\4\f\4\16\4<\13\4\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5"+
-        "\3\5\3\5\3\5\5\5J\n\5\3\6\3\6\3\6\7\6O\n\6\f\6\16\6R\13\6\3\7\3\7\3\7"+
-        "\2\2\b\2\4\6\b\n\f\2\3\3\2\13\fW\2\16\3\2\2\2\4\63\3\2\2\2\6\65\3\2\2"+
-        "\2\bI\3\2\2\2\nK\3\2\2\2\fS\3\2\2\2\16\22\5\4\3\2\17\21\5\4\3\2\20\17"+
-        "\3\2\2\2\21\24\3\2\2\2\22\20\3\2\2\2\22\23\3\2\2\2\23\3\3\2\2\2\24\22"+
-        "\3\2\2\2\25\26\7\3\2\2\26\27\7\16\2\2\27\30\7\17\2\2\30\31\7\4\2\2\31"+
-        "\36\7\13\2\2\32\33\7\5\2\2\33\35\7\13\2\2\34\32\3\2\2\2\35 \3\2\2\2\36"+
-        "\34\3\2\2\2\36\37\3\2\2\2\37!\3\2\2\2 \36\3\2\2\2!\64\7\6\2\2\"#\7\7\2"+
-        "\2#$\7\16\2\2$%\7\f\2\2%&\7\5\2\2&)\7\f\2\2\'(\7\5\2\2(*\7\f\2\2)\'\3"+
-        "\2\2\2)*\3\2\2\2*+\3\2\2\2+,\7\17\2\2,-\7\4\2\2-.\5\6\4\2./\7\6\2\2/\64"+
-        "\3\2\2\2\60\61\7\b\2\2\61\62\7\16\2\2\62\64\7\17\2\2\63\25\3\2\2\2\63"+
-        "\"\3\2\2\2\63\60\3\2\2\2\64\5\3\2\2\2\65:\5\b\5\2\66\67\7\5\2\2\679\5"+
-        "\b\5\28\66\3\2\2\29<\3\2\2\2:8\3\2\2\2:;\3\2\2\2;\7\3\2\2\2<:\3\2\2\2"+
-        "=>\7\f\2\2>?\7\r\2\2?@\7\f\2\2@A\7\16\2\2AB\5\n\6\2BC\7\17\2\2CJ\3\2\2"+
-        "\2DE\7\f\2\2EF\7\r\2\2FG\7\f\2\2GH\7\16\2\2HJ\7\17\2\2I=\3\2\2\2ID\3\2"+
-        "\2\2J\t\3\2\2\2KP\5\f\7\2LM\7\5\2\2MO\5\f\7\2NL\3\2\2\2OR\3\2\2\2PN\3"+
-        "\2\2\2PQ\3\2\2\2Q\13\3\2\2\2RP\3\2\2\2ST\t\2\2\2T\r\3\2\2\2\t\22\36)\63"+
-        ":IP";
+        "\3\3\3\3\3\3\3\3\5\3*\n\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3"+
+        "\5\3\67\n\3\3\4\3\4\3\4\7\4<\n\4\f\4\16\4?\13\4\3\5\3\5\3\5\3\5\3\5\3"+
+        "\5\3\5\3\5\3\5\3\5\3\5\3\5\5\5M\n\5\3\6\3\6\3\6\7\6R\n\6\f\6\16\6U\13"+
+        "\6\3\7\3\7\3\7\2\2\b\2\4\6\b\n\f\2\3\3\2\13\f[\2\16\3\2\2\2\4\66\3\2\2"+
+        "\2\68\3\2\2\2\bL\3\2\2\2\nN\3\2\2\2\fV\3\2\2\2\16\22\5\4\3\2\17\21\5\4"+
+        "\3\2\20\17\3\2\2\2\21\24\3\2\2\2\22\20\3\2\2\2\22\23\3\2\2\2\23\3\3\2"+
+        "\2\2\24\22\3\2\2\2\25\26\7\3\2\2\26\27\7\16\2\2\27\30\7\17\2\2\30\31\7"+
+        "\4\2\2\31\36\7\13\2\2\32\33\7\5\2\2\33\35\7\13\2\2\34\32\3\2\2\2\35 \3"+
+        "\2\2\2\36\34\3\2\2\2\36\37\3\2\2\2\37!\3\2\2\2 \36\3\2\2\2!\67\7\6\2\2"+
+        "\"#\7\7\2\2#$\7\16\2\2$%\7\f\2\2%&\7\5\2\2&)\7\f\2\2\'(\7\5\2\2(*\7\f"+
+        "\2\2)\'\3\2\2\2)*\3\2\2\2*+\3\2\2\2+,\7\17\2\2,-\7\4\2\2-.\5\6\4\2./\7"+
+        "\6\2\2/\67\3\2\2\2\60\61\7\b\2\2\61\62\7\16\2\2\62\67\7\17\2\2\63\64\7"+
+        "\f\2\2\64\65\7\r\2\2\65\67\7\f\2\2\66\25\3\2\2\2\66\"\3\2\2\2\66\60\3"+
+        "\2\2\2\66\63\3\2\2\2\67\5\3\2\2\28=\5\b\5\29:\7\5\2\2:<\5\b\5\2;9\3\2"+
+        "\2\2<?\3\2\2\2=;\3\2\2\2=>\3\2\2\2>\7\3\2\2\2?=\3\2\2\2@A\7\f\2\2AB\7"+
+        "\r\2\2BC\7\f\2\2CD\7\16\2\2DE\5\n\6\2EF\7\17\2\2FM\3\2\2\2GH\7\f\2\2H"+
+        "I\7\r\2\2IJ\7\f\2\2JK\7\16\2\2KM\7\17\2\2L@\3\2\2\2LG\3\2\2\2M\t\3\2\2"+
+        "\2NS\5\f\7\2OP\7\5\2\2PR\5\f\7\2QO\3\2\2\2RU\3\2\2\2SQ\3\2\2\2ST\3\2\2"+
+        "\2T\13\3\2\2\2US\3\2\2\2VW\t\2\2\2W\r\3\2\2\2\t\22\36)\66=LS";
     public static final ATN _ATN =
         new ATNDeserializer().deserialize(_serializedATN.toCharArray());
     static {

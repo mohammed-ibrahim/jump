@@ -23,7 +23,9 @@ public class CacheManager {
 
     private Map<String, List<String>> items = new HashMap<String, List<String>>();
 
-    public void addEntry(String cacheKey, List<String> ids) {
+    private Map<String, String> variables = new HashMap<String, String>();
+
+    public void addInsertedIdSet(String cacheKey, List<String> ids) {
         if (!this.items.keySet().contains(cacheKey)) {
             this.items.put(cacheKey, new ArrayList<String>());
         }
@@ -31,7 +33,7 @@ public class CacheManager {
         this.items.get(cacheKey).addAll(ids);
     }
 
-    public Iterator<String> getIteratorForKey(String key) {
+    public Iterator<String> getIteratorForInsertedIds(String key) {
         if (!this.items.containsKey(key)) {
             String message = "Cache key missing: " + key;
             throw new RuntimeException(message);
@@ -40,11 +42,24 @@ public class CacheManager {
         return this.items.get(key).iterator();
     }
 
-    public Set<String> allkeys() {
+    public Set<String> allInsertedIdKeys() {
         return this.items.keySet();
     }
 
-    public String itemsForKey(String key) {
+    public String itemsForInsertedIdKey(String key) {
         return StringUtils.join(this.items.get(key), ",");
+    }
+
+    public void addVariable(String variableName, String variableValue) {
+        this.variables.put(variableName, variableValue);
+    }
+
+    public String getVariable(String variableName) {
+        if(!this.variables.containsKey(variableName)) {
+            String message = String.format("Variable [%s] not defined.", variableName);
+            throw new RuntimeException(message);
+        }
+
+        return this.variables.get(variableName);
     }
 }

@@ -39,7 +39,7 @@ public class ImportHandler {
         StringBuilder sb = new StringBuilder();
         String prefix = "";
 
-        for (int i=0; i<insertCommand.getNumRows(); i++) {
+        for (int i=0; i<insertCommand.getNumRows().getIntValue(); i++) {
 
             sb.append(prefix);
             sb.append(OPEN_PAREN);
@@ -75,7 +75,7 @@ public class ImportHandler {
             && !this.insertCommand.getStorageIdentifier().isEmpty()) {
 
             List<String> insertedIds = this.sqlExecutor.executeUpdateWithImpactedIds(sql);
-            CacheManager.getInstance().addEntry(this.insertCommand.getStorageIdentifier(), insertedIds);
+            CacheManager.getInstance().addInsertedIdSet(this.insertCommand.getStorageIdentifier(), insertedIds);
         } else {
 
             this.sqlExecutor.executeUpdate(sql);

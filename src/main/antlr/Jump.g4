@@ -14,6 +14,7 @@ statement       : command  (command )*                                          
 command         : 'sql' OPENPAREN CLOSEPAREN '{'  STRING (',' STRING)*  '}'                     #SqlStatement
                 | 'insert' OPENPAREN WORD ',' WORD (',' WORD)? CLOSEPAREN '{' input '}'         #InsertStatement
                 | 'rollback' OPENPAREN CLOSEPAREN                                               #RollbackStatement
+                | WORD '=' WORD                                                                 #VariableAssignment
                 ;
 
 input           : field_config (',' field_config)*                                              #FieldConfigList

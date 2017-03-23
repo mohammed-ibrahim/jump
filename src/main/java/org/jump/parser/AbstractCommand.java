@@ -18,4 +18,9 @@ public class AbstractCommand {
 
         throw new RuntimeException("Method not supported");
     }
+
+    public VariableCommand getVariableCommand() {
+
+        throw new RuntimeException("Method not supported");
+    }
 }
