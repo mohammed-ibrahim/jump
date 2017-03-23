@@ -35,7 +35,8 @@ dependencies {
     compile 'mysql:mysql-connector-java:5.1.6'
     compile 'commons-cli:commons-cli:1.2'
     compile 'org.projectlombok:lombok:1.16.12'
-    compile name: 'parser-jump-all-1.0'
+    compile 'org.apache.commons:commons-lang3:3.0'
+    compile name: 'antlr-4.5.1-complete'
 }
 
 task onejar(type: Jar) {
