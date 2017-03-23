@@ -1,81 +1,50 @@
 package org.jump.boot;
 
-import java.nio.file.NoSuchFileException;
-import java.sql.SQLException;
-
 import org.jump.entity.ApplicationConfiguration;
 import org.jump.entity.ExecutionStatus;
 import org.jump.parser.JumpGen;
 import org.jump.parser.ParseResult;
 import org.jump.service.CacheManager;
+import org.jump.service.OperationStatusReporter;
 import org.jump.service.Executor;
 import org.jump.service.FileLogger;
 import org.jump.util.Utility;
-import org.jump.validation.CloValidator;
+import org.jump.validation.ArgumentValidator;
 
 public class JumpMain {
 
     public static void main(String[] args) {
 
-        CloValidator validator = new CloValidator();
-        ApplicationConfiguration conf = validator.validate(args);
+        ArgumentValidator validator = new ArgumentValidator();
+        ApplicationConfiguration applicationConfiguration = validator.validate(args);
+        OperationStatusReporter operationStatusReporter = new OperationStatusReporter(applicationConfiguration);
 
         try {
 
-            if (!conf.isSuccess()) {
+            //1. Read the file
+            String fileContents = Utility.getFileContents(applicationConfiguration.getFileName());
 
-                return;
-            }
+            //2. Parse the file
+            JumpGen parser = new JumpGen();
+            ParseResult result = parser.parse(fileContents);
 
-            String fileContents = Utility.getFileContents(conf.getFileName());
-            ParseResult result = JumpGen.parse(fileContents);
-
-            if (result.getCommands() == null) {
-                System.out.println("There is an error in script: " + conf.getFileName());
-                System.out.println(result.getErrorMessage());
-                System.exit(0);
-            }
-
-            ExecutionStatus executionStatus = new Executor().execute(conf, result.getCommands());
+            // 3. Execute the commands
+            ExecutionStatus executionStatus = new Executor().execute(applicationConfiguration, result.getCommands());
             System.out.println(Utility.getExecutionStatus(executionStatus));
 
+            // 4. Write the cached keys
             if (CacheManager.getInstance().allkeys().size() > 0) {
                 for (String cacheKey: CacheManager.getInstance().allkeys()) {
                     FileLogger.getInstance().writeRow(cacheKey + ": " + CacheManager.getInstance().itemsForKey(cacheKey));
                 }
             }
 
+            // 5. Close the file logger
             FileLogger.getInstance().close();
-        } catch (NoSuchFileException nsfe) {
 
-            System.out.println(Utility.getExecutionStatus(ExecutionStatus.FAILED));
-            System.out.println("File not accessible: " + conf.getFileName());
-            printException(nsfe, conf);
-        } catch (SQLException see) {
-
-            System.out.println(Utility.getExecutionStatus(ExecutionStatus.FAILED));
-            String message = String.format(
-                "Error with connection database/executing query: message: [%s] error-code: [%d] sql-state: [%s], Check whether sql-server host is reachable/correct, or error with sql.",
-                see.getMessage(),
-                see.getErrorCode(),
-                see.getSQLState());
-            System.out.println(message);
-            printException(see, conf);
         } catch (Exception e) {
 
-            System.out.println(Utility.getExecutionStatus(ExecutionStatus.FAILED));
-            System.out.println(e.getMessage());
-            printException(e, conf);
-
+            operationStatusReporter.reportError(e);
         }
     }
-
-    public static void printException(Exception e, ApplicationConfiguration conf) {
-        if (conf.isVerbose()) {
-            e.printStackTrace();
-        } else {
-            System.out.println("Use verbose command line option for more details, use --verbose");
-        }
-    }
-
 }
