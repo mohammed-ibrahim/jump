@@ -13,7 +13,7 @@ import org.jump.service.FileLogger;
 import org.jump.util.Utility;
 import org.jump.validation.CloValidator;
 
-public class Main {
+public class JumpMain {
 
     public static void main(String[] args) {
 
