@@ -59,7 +59,7 @@ public class DatabaseRowFetcher implements IField {
             return Utility.wrapAndEscape(this.lastItem);
         } else {
 
-            this.factorCount = 0;
+            this.factorCount = 1;
             this.lastItem = fetchNext();
 
             return Utility.wrapAndEscape(this.lastItem);

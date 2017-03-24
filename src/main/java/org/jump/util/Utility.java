@@ -75,4 +75,13 @@ public class Utility {
                 throw new RuntimeException("Execution status not defined: " + executionStatus.toString());
         }
     }
+
+    public static Double getDoubleValue(String item) {
+        if (!Utility.isNumeric(item)) {
+            String message = String.format("%s couldn't be cast to integer.", item);
+            throw new RuntimeException(message);
+        }
+
+        return Double.parseDouble(item);
+    }
 }

@@ -89,7 +89,7 @@ public class ImportHandler {
             columnNames.add(fieldConfig.getFieldName());
         }
 
-        return String.format("INSERT INTO %s (%s) VALUES ", this.insertCommand.getTableName(), StringUtils.join(columnNames, ","));
+        return String.format("INSERT INTO %s (%s) VALUES \n", this.insertCommand.getTableName(), StringUtils.join(columnNames, ","));
     }
 
     private String getRow() {
