@@ -3,6 +3,7 @@ package org.jump.service;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Date;
 
 public class FileLogger {
 
@@ -24,11 +25,16 @@ public class FileLogger {
         if (this.writer == null) {
             try {
                 this.writer = getWriter();
+                this.writer.write("----------------------------------------------------------------------------------");
+                this.writer.newLine();
+                this.writer.write(new Date().toString());
+                this.writer.newLine();
             } catch (Exception e) {
 
                 e.printStackTrace();
                 return;
             }
+
         }
 
         try {
@@ -55,7 +61,7 @@ public class FileLogger {
     }
 
     private BufferedWriter getWriter() throws Exception {
-        this.fileName = String.valueOf(System.currentTimeMillis()) + "_result.txt";
+        this.fileName = "output.txt";
         FileWriter fileWriter = new FileWriter(fileName, true);
         return new BufferedWriter(fileWriter);
     }
