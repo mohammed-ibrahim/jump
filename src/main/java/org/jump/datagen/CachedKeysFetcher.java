@@ -14,27 +14,59 @@ public class CachedKeysFetcher implements IField {
 
     private String cacheKey;
 
+    private String lastItem;
+
+    private int factor;
+
+    private int factorCount;
+
     public CachedKeysFetcher(FieldConfig fieldConfiguration) {
         if (fieldConfiguration.getParams().size() < 1 || fieldConfiguration.getParams().size() > 2) {
             throw new RuntimeException("inserted_ids usage: inserted_ids('key') or inserted_ids('key', 'factor')");
         }
 
-        if (fieldConfiguration.getParams().size() == 2 && !Utility.isNumeric(fieldConfiguration.getParams().get(1))) {
-            throw new RuntimeException("Parameter 2 passed to inserted_ids('sql', 'factor') should be integer");
+        if (fieldConfiguration.getParams().size() == 2) {
+            if (!Utility.isNumeric(fieldConfiguration.getParams().get(1))) {
+                throw new RuntimeException("Parameter 2 passed to inserted_ids('sql', 'factor') should be integer");
+            }
+
+            this.factor = Utility.getDoubleValue(fieldConfiguration.getParams().get(1)).intValue();
+        } else {
+            this.factor = 1;
         }
 
+        this.iterator = null;
         this.fieldConfig = fieldConfiguration;
         this.cacheKey = this.fieldConfig.getParams().get(0);
+        this.lastItem = null;
+        this.factorCount = 0;
     }
 
     @Override
     public String getNext() {
+        if (this.factorCount < this.factor) {
+            this.factorCount = this.factorCount + 1;
 
-        if (this.iterator == null || !this.iterator.hasNext()) {
+            if (this.lastItem == null) {
+
+                this.lastItem = fetchNext();
+            }
+
+            return Utility.wrap(this.lastItem);
+        } else {
+
+            this.factorCount = 1;
+            this.lastItem = fetchNext();
+
+            return Utility.wrap(this.lastItem);
+        }
+    }
+
+    private String fetchNext() {
+        if (this.iterator == null|| !this.iterator.hasNext()) {
             this.iterator = CacheManager.getInstance().getIteratorForInsertedIds(this.cacheKey);
         }
 
         return this.iterator.next();
     }
-
 }
