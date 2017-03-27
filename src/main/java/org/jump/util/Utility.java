@@ -84,4 +84,10 @@ public class Utility {
 
         return Double.parseDouble(item);
     }
+
+    public static void throwIfTrue(boolean b, String message) {
+        if (b) {
+            throw new RuntimeException(message);
+        }
+    }
 }
