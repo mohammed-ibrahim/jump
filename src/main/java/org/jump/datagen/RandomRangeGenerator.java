@@ -19,8 +19,8 @@ public class RandomRangeGenerator implements IField {
             throw new RuntimeException("random_between takes 2 arguments.");
         }
 
-        if (!Utility.isNumeric(fieldConfig.getParams().get(0)) ||
-                !Utility.isNumeric(fieldConfig.getParams().get(1))) {
+        if (!Utility.isNumeric(fieldConfig.getParams().get(0))
+            || !Utility.isNumeric(fieldConfig.getParams().get(1))) {
 
             throw new RuntimeException("Argument for function random_between have to be integers");
         }
@@ -38,7 +38,7 @@ public class RandomRangeGenerator implements IField {
 
     @Override
     public String getNext() {
-        Integer result = randomizer.nextInt(this.max-this.min) + this.min;
+        Integer result = randomizer.nextInt(this.max - this.min) + this.min;
         return Utility.wrapAndEscape(String.valueOf(result.intValue()));
     }
 

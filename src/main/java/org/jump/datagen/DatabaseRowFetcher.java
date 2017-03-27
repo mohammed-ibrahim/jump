@@ -27,14 +27,17 @@ public class DatabaseRowFetcher implements IField {
 
     public DatabaseRowFetcher(ApplicationConfiguration appConfig, FieldConfig fieldConfig, TransactionalSqlExecutor sqlExecutor) {
         this.sqlExecutor = sqlExecutor;
+        int paramSize = fieldConfig.getParams().size();
+        boolean parametersMismatch = paramSize < 1 || paramSize > 2;
+        String message = "Invalid usage of method: from_sql\n";
+        message += "Usage: inserted_ids('sql') or inserted_ids('sql', 'factor')";
+        Utility.throwIfTrue(parametersMismatch, message);
 
-        if (fieldConfig.getParams().size() < 1 || fieldConfig.getParams().size() > 2) {
-            throw new RuntimeException("from_sql usage: from_sql('sql') or from_sql('sql', 'factor')");
-        }
-
-        if (fieldConfig.getParams().size() == 2 && !Utility.isNumeric(fieldConfig.getParams().get(1))) {
-            throw new RuntimeException("Parameter 2 passed to from_sql('sql', 'factor') should be integer");
-        }
+        String param2 = paramSize > 1 ? fieldConfig.getParams().get(1) : null;
+        Utility.throwIfTrue(
+            paramSize > 1 && !Utility.isNumeric(param2),
+            "Parameter 2 passed to from_sql('sql', 'factor') should be integer"
+        );
 
         try {
             this.items = this.getItemsFromDb(appConfig, fieldConfig);
@@ -67,7 +70,7 @@ public class DatabaseRowFetcher implements IField {
     }
 
     private String fetchNext() {
-        if (this.iterator == null|| !this.iterator.hasNext()) {
+        if (this.iterator == null || !this.iterator.hasNext()) {
             this.iterator = this.items.iterator();
         }
 

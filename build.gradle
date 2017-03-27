@@ -1,7 +1,16 @@
-apply plugin: 'java'
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.4'
+    }
+}
 
-apply plugin:'application'
-apply plugin:'maven'
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'maven'
+apply plugin: 'checkstyle'
 
 version = '1.0'
 jar {
@@ -11,6 +20,11 @@ jar {
                    'Main-Class': 'org.jump.Main'
 
     }
+}
+
+checkstyle {
+    toolVersion = '7.5'
+    configFile rootProject.file('checkstyle.xml')
 }
 
 uploadArchives {
