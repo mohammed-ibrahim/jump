@@ -18,6 +18,11 @@ public class DescriptiveErrorListener extends BaseErrorListener {
             sourceName = msg;
         }
 
-        throw new ParseFailureException(sourceName, line, charPositionInLine, e.getOffendingToken().getText());
+        String offendingToken = "N/A";
+        if (e != null && e.getOffendingToken() != null && e.getOffendingToken().getText() != null) {
+            offendingToken = e.getOffendingToken().getText();
+        }
+
+        throw new ParseFailureException(sourceName, line, charPositionInLine, offendingToken);
     }
 }
